@@ -1,7 +1,8 @@
 import "./App.css";
+import { MainBackground } from "./components/MainBackground";
 
 function App() {
-  return <h1 className="text-3xl font-bold underline">TEST TAILWIND SETUP</h1>;
+  return <MainBackground />;
 }
 
 export default App;

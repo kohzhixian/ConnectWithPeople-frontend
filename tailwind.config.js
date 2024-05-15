@@ -1,8 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customDarkGreen: "#00a884",
+        customLightGrey: "#eae6df",
+      },
+      height: {
+        "127px": "127px",
+      },
+    },
   },
   plugins: [],
 };
