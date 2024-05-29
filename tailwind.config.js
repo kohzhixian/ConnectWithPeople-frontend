@@ -10,21 +10,27 @@ export default {
         customDarkGreen: "#00a884",
         customLightGrey: "#eae6df",
         customWhite: "#f7f8fa",
+        topPanelBgColor: "#F0F2F5",
+        topPanelIconColor: "#54656f",
+      },
+      flex: {
+        CND_flex: "0 0 30%",
       },
       height: {
         "overlay-height": "calc(100% - 38px)",
+        "59px": "59px",
       },
       margin: {
-        "ml-19": "19px",
+        "19px": "19px",
+      },
+      maxWidth: {
+        "30%": "30%",
       },
       spacing: {
         "19px": "19px",
       },
       width: {
         "overlay-width": "calc(100% - 38px)",
-      },
-      zIndex: {
-        100: "100",
       },
     },
   },

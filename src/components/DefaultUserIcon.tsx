@@ -1,4 +1,4 @@
-export const ProfileImage = () => {
+export const DefaultUserIcon = () => {
   return (
     <div className="relative w-10 h-10 overflow-hidden bg-[#dfe5e7] rounded-full dark:bg-gray-600">
       <svg
