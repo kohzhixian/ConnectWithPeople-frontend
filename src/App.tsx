@@ -4,10 +4,9 @@ import { Overlay } from "./components/Overlay";
 
 function App() {
   return (
-    <div className="relative">
-      <MainBackground />
+    <MainBackground>
       <Overlay />
-    </div>
+    </MainBackground>
   );
 }
 

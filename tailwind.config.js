@@ -19,7 +19,6 @@ export default {
         CND_flex: "0 0 30%",
       },
       height: {
-        "overlay-height": "calc(100% - 38px)",
         "59px": "59px",
         h_pane_subheader: "49px",
         search_icon_div_height: "35px",
@@ -34,7 +33,6 @@ export default {
         "19px": "19px",
       },
       width: {
-        "overlay-width": "calc(100% - 38px)",
         search_icon_div_width: "65px",
       },
     },
