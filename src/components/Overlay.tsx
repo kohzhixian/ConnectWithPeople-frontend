@@ -1,5 +1,6 @@
 import { SearchIcon } from "./SearchIcon";
 import { SearchTextfield } from "./SearchTextfield";
+import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelIcons } from "./TopPanelIcons";
 import { TopPanelProfile } from "./TopPanelProfile";
@@ -22,6 +23,11 @@ export const Overlay = () => {
                   <SearchIcon />
                   <SearchTextfield />
                 </div>
+              </div>
+              <div className="relative box-border flex flex-row px-4 gap-x-2 bg-white h-[42px] border-b border-b-1 border-[#e7fce3] p-t-[2px] p-b-[7px]">
+                <TabButton isActive={true} tabButtonLabel="All" />
+                <TabButton isActive={false} tabButtonLabel="Unread" />
+                <TabButton isActive={false} tabButtonLabel="Groups" />
               </div>
             </div>
           </div>
