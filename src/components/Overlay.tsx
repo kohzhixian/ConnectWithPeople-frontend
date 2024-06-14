@@ -1,12 +1,13 @@
 import { TabButtonLabel } from "../constants/TabButtonLabel";
-import { ChatRoomIcon } from "./ChatRoomIcon";
+import { chat_room_dummy_data } from "../data/chat_room_dummy_data";
+import { chatRoomInterface } from "../types/chatRoomType";
+import { ChatRoom } from "./ChatRoom";
 import { SearchIcon } from "./SearchIcon";
 import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelIcons } from "./TopPanelIcons";
 import { TopPanelProfile } from "./TopPanelProfile";
-import mockTestImage2 from "../assets/images/mock-test-image2.jpg";
 export const Overlay = () => {
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
@@ -40,11 +41,16 @@ export const Overlay = () => {
                   tabButtonLabel={TabButtonLabel.groupsButtonLabel}
                 />
               </div>
-              <div className="flex flex-row relative h-[72px] w-[491px] bg-white">
-                <div className="flex h-[72px] w-[77px] pl-[13px] pr-[15px] items-center">
-                  <ChatRoomIcon imageIcon={mockTestImage2} />
-                </div>
-              </div>
+              {chat_room_dummy_data.map((data: chatRoomInterface) => (
+                <ChatRoom
+                  key={data.key}
+                  chatRoomImage={data.chatRoomImage}
+                  chatRoomTitle={data.chatRoomTitle}
+                  dateMessageWasSent={data.dateMessageWasSent}
+                  messageSent={data.messageSent}
+                  sender={data.sender}
+                />
+              ))}
             </div>
           </div>
           <div className="flex-1 relative h-full overflow-hidden">

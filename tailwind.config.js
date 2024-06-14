@@ -14,6 +14,9 @@ export default {
         topPanelBgColor: "#F0F2F5",
         topPanelIconColor: "#54656f",
         searchIconBgColor: "#f0f2f5",
+        chatMeta: "#667781",
+        primaryStrong: "#111b21",
+        secondaryStronger: "#3b4a54",
       },
       flex: {
         CND_flex: "0 0 30%",
