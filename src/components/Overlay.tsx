@@ -1,10 +1,12 @@
+import { TabButtonLabel } from "../constants/TabButtonLabel";
+import { ChatRoomIcon } from "./ChatRoomIcon";
 import { SearchIcon } from "./SearchIcon";
 import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelIcons } from "./TopPanelIcons";
 import { TopPanelProfile } from "./TopPanelProfile";
-
+import mockTestImage2 from "../assets/images/mock-test-image2.jpg";
 export const Overlay = () => {
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
@@ -25,9 +27,23 @@ export const Overlay = () => {
                 </div>
               </div>
               <div className="relative box-border flex flex-row px-4 gap-x-2 bg-white h-[42px] border-b border-b-1 border-[#e7fce3] p-t-[2px] p-b-[7px]">
-                <TabButton isActive={true} tabButtonLabel="All" />
-                <TabButton isActive={false} tabButtonLabel="Unread" />
-                <TabButton isActive={false} tabButtonLabel="Groups" />
+                <TabButton
+                  isActive={true}
+                  tabButtonLabel={TabButtonLabel.allButtonLabel}
+                />
+                <TabButton
+                  isActive={false}
+                  tabButtonLabel={TabButtonLabel.unreadButtonLabel}
+                />
+                <TabButton
+                  isActive={false}
+                  tabButtonLabel={TabButtonLabel.groupsButtonLabel}
+                />
+              </div>
+              <div className="flex flex-row relative h-[72px] w-[491px] bg-white">
+                <div className="flex h-[72px] w-[77px] pl-[13px] pr-[15px] items-center">
+                  <ChatRoomIcon imageIcon={mockTestImage2} />
+                </div>
               </div>
             </div>
           </div>
