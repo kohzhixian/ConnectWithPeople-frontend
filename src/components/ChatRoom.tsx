@@ -1,20 +1,31 @@
 import { ChatRoomIcon } from "./ChatRoomIcon";
 
 export const ChatRoom = ({
+  id,
   chatRoomImage,
   chatRoomTitle,
   sender,
   messageSent,
   dateMessageWasSent,
+  isClicked,
+  handleChatRoomClick,
 }: {
+  id: string;
   chatRoomImage: string;
   chatRoomTitle: string;
   sender: string;
   messageSent: string;
   dateMessageWasSent: string;
+  isClicked: boolean;
+  handleChatRoomClick: (id: string) => void;
 }) => {
   return (
-    <div className="flex flex-row relative h-[72px] w-[491px] bg-white">
+    <div
+      className={`flex flex-row relative h-[72px] w-[491px] ${
+        isClicked ? "bg-backgroundDefaultActive" : "bg-white"
+      }  hover:bg-backgroundDefaultActive hover:cursor-pointer`}
+      onClick={() => handleChatRoomClick(id)}
+    >
       <div className="flex h-[72px] w-[77px] pl-[13px] pr-[15px] items-center">
         <ChatRoomIcon imageIcon={chatRoomImage} />
       </div>

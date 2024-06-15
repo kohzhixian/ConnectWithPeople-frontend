@@ -1,5 +1,4 @@
 export const ChatRoomIcon = ({ imageIcon }: { imageIcon: string }) => {
-  console.log("image icon: ", imageIcon);
   return (
     <img
       src={imageIcon}

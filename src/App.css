@@ -3,3 +3,16 @@ input[type="search"]::-webkit-search-cancel-button {
   margin-right: 10px;
   margin-left: 10px;
 }
+
+::-webkit-scrollbar {
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f1f1f1;
+  height: 6px !important;
+}
