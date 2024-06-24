@@ -1,6 +1,13 @@
-export const NewChatIcon = () => {
+export const NewChatIcon = ({
+  handleChatIconClicked,
+}: {
+  handleChatIconClicked: () => void;
+}) => {
   return (
-    <div className="icon-div ml-2.5 relative flex h-full w-10  px-2 py-2 cursor-pointer">
+    <div
+      className="icon-div ml-2.5 relative flex h-full w-10  px-2 py-2 cursor-pointer"
+      onClick={handleChatIconClicked}
+    >
       <svg
         viewBox="0 0 24 24"
         height="24"

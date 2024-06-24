@@ -1,12 +1,23 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { MainBackground } from "./components/MainBackground";
-import { Overlay } from "./components/Overlay";
+import { MainPage } from "./components/MainPage";
 
 function App() {
   return (
-    <MainBackground>
-      <Overlay />
-    </MainBackground>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <MainBackground>
+              <MainPage />
+            </MainBackground>
+          }
+        />
+        <Route path="*" element={<Navigate to="/404" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
