@@ -1,4 +1,4 @@
-import { ChatRoomIcon } from "./ChatRoomIcon";
+import { ChatRoomIcon } from "./Icons/ChatRoomIcon";
 
 export const ChatRoom = ({
   id,

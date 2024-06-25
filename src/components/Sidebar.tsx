@@ -1,12 +1,12 @@
+import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders";
 import { TabButtonLabel } from "../constants/TabButtonLabel";
 import { chat_room_dummy_data } from "../data/chat_room_dummy_data";
 import { chatRoomInterface } from "../types/chatRoomType";
 import { ChatRoom } from "./ChatRoom";
-import { SearchIcon } from "./SearchIcon";
+import { TopPanelIcons } from "./Icons/TopPanelIcons";
 import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
-import { TopPanelIcons } from "./TopPanelIcons";
 import { TopPanelProfile } from "./TopPanelProfile";
 
 export const Sidebar = ({
@@ -27,12 +27,7 @@ export const Sidebar = ({
         </>
       </TopPanel>
       <div className="h-full">
-        <div className="relative box-border flex justify-start items-center h-h_pane_subheader px-3 bg-white">
-          <div className="relative flex flex-row overflow-hidden bg-backgroundDefaultActive rounded-lg w-full">
-            <SearchIcon />
-            <SearchTextfield />
-          </div>
-        </div>
+        <SearchTextfield placeholder={SearchTextfieldPlaceholders.Search} />
         <div className="relative box-border flex flex-row px-4 gap-x-2 bg-white h-[42px] border-b border-b-1 border-[#e7fce3] p-t-[2px] p-b-[7px]">
           <TabButton
             isActive={true}

@@ -1,9 +1,13 @@
-export const SearchTextfield = () => {
+import { SearchIcon } from "./Icons/SearchIcon";
+import { Textfield } from "./Textfield";
+
+export const SearchTextfield = ({ placeholder }: { placeholder: string }) => {
   return (
-    <input
-      type="search"
-      className="search-textfield flex bg-backgroundDefaultActive text-start focus:outline-none focus:border-transparent w-full"
-      placeholder="Search"
-    />
+    <div className="relative box-border flex justify-start items-center h-h_pane_subheader px-3 bg-white">
+      <div className="relative flex flex-row overflow-hidden bg-backgroundDefaultActive rounded-lg w-full">
+        <SearchIcon />
+        <Textfield placeholder={placeholder} />
+      </div>
+    </div>
   );
 };
