@@ -1,5 +1,5 @@
-import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders";
-import { TabButtonLabel } from "../constants/TabButtonLabel";
+import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
+import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { chat_room_dummy_data } from "../data/chat_room_dummy_data";
 import { chatRoomInterface } from "../types/chatRoomType";
 import { ChatRoom } from "./ChatRoom";

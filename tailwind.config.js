@@ -28,12 +28,16 @@ export default {
         search_icon_div_height: "35px",
         h_full_header: "108px",
         drawerHeaderLineHeight: "23px",
+        cellHeight: "72px",
       },
       margin: {
         "19px": "19px",
       },
       maxWidth: {
         "30%": "30%",
+      },
+      padding: {
+        chatSpacing: "15px",
       },
       spacing: {
         "19px": "19px",
