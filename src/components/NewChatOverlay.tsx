@@ -23,7 +23,6 @@ export const NewChatOVerlay = ({
       {NewChatOverlayItemConstants.map((data) => (
         <NewChatOverlayItem
           key={data.id}
-          id={data.id}
           newChatOverlayItemIcon={data.newChatOverlayItemIcon}
           newChatOverlayItemLabel={data.newChatOverlayItemLabel}
         />
