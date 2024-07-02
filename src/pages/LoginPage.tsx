@@ -1,7 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
+import { Dispatch, SetStateAction } from "react";
 
-export const LoginPage = () => {
+export const LoginPage = ({
+  setIsValidUser,
+}: {
+  setIsValidUser: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const navigate = useNavigate();
+  const handleLoginButtonClicked = () => {
+    setIsValidUser(true);
+    navigate("/", { replace: false });
+  };
+
+  const handleRegisterButtonClicked = () => {};
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -20,11 +33,13 @@ export const LoginPage = () => {
                   buttonLabel="Login"
                   buttonColor="bg-blue-500"
                   hoverColor="bg-blue-600"
+                  handleButtonClicked={handleLoginButtonClicked}
                 />
                 <CustomButton
                   buttonLabel="Register"
                   buttonColor="bg-teal-500"
                   hoverColor="bg-teal-600"
+                  handleButtonClicked={handleRegisterButtonClicked}
                 />
               </div>
             </div>
