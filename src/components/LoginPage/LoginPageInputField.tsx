@@ -10,6 +10,7 @@ export const LoginPageInputField = ({
   register,
   name,
   errors,
+  onChange,
 }: {
   label: string;
   placeholder: string;
@@ -17,6 +18,7 @@ export const LoginPageInputField = ({
   name: keyof LoginInputs;
   register: UseFormRegister<LoginInputs>;
   errors: FieldErrors<LoginInputs>;
+  onChange: () => void;
 }) => {
   return (
     <div>
@@ -27,6 +29,7 @@ export const LoginPageInputField = ({
           name={name}
           register={register}
           inputType={inputType}
+          onChange={onChange}
         />
       </div>
       {errors[name] && (

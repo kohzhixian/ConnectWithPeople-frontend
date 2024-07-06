@@ -18,6 +18,7 @@ export const LoginPage = ({
     register,
     handleSubmit,
     formState: { errors },
+    clearErrors,
   } = useForm<LoginInputs>({
     resolver: yupResolver(loginSchema),
     mode: "onSubmit",
@@ -58,6 +59,7 @@ export const LoginPage = ({
                 name="username"
                 inputType="text"
                 errors={errors}
+                onChange={() => clearErrors("username")}
               />
               <LoginPageInputField
                 label="Password:"
@@ -66,6 +68,7 @@ export const LoginPage = ({
                 name="password"
                 inputType="password"
                 errors={errors}
+                onChange={() => clearErrors("password")}
               />
               <div className="flex justify-end w-full gap-3">
                 <CustomButton

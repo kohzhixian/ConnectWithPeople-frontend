@@ -1,4 +1,4 @@
-import { UseFormRegister } from "react-hook-form";
+import { UseFormClearErrors, UseFormRegister } from "react-hook-form";
 import { CustomInputFieldInputType } from "../types/components/customInputField.type";
 import { LoginInputs } from "../types/reducer/authentication.type";
 
@@ -7,11 +7,13 @@ export const CustomInputField = ({
   inputType,
   name,
   register,
+  onChange,
 }: {
   placeholder: string;
   inputType: CustomInputFieldInputType;
   name: keyof LoginInputs;
   register: UseFormRegister<LoginInputs>;
+  onChange: () => void;
 }) => {
   return (
     <input
@@ -19,6 +21,7 @@ export const CustomInputField = ({
       placeholder={placeholder}
       className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       {...register(name)}
+      onChange={onChange}
     />
   );
 };
