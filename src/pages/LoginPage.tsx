@@ -1,20 +1,36 @@
+import { Dispatch, SetStateAction } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
-import { Dispatch, SetStateAction } from "react";
+import { LoginInputs } from "../types/reducer/authentication.type";
 
 export const LoginPage = ({
   setIsValidUser,
 }: {
   setIsValidUser: Dispatch<SetStateAction<boolean>>;
 }) => {
+  // constants
   const navigate = useNavigate();
-  const handleLoginButtonClicked = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginInputs>();
+
+  const loginFormOnSubmit: SubmitHandler<LoginInputs> = (data) => {
+    console.log(data);
     setIsValidUser(true);
-    navigate("/", { replace: false });
+    navigate("/", { replace: true });
   };
 
-  const handleRegisterButtonClicked = () => {};
+  // functions
+  const handleRegisterButtonClicked = (
+    e: React.MouseEvent<HTMLInputElement>
+  ) => {
+    e.preventDefault();
+    navigate("/register", { replace: false });
+  };
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -24,26 +40,46 @@ export const LoginPage = ({
               Connect With People
             </h1>
           </div>
-          <div className="flex flex-1 items-center justify-center bg-gray-50 h-full">
+          <form
+            className="flex flex-1 items-center justify-center bg-gray-50 h-full"
+            onSubmit={handleSubmit(loginFormOnSubmit)}
+          >
             <div className="flex flex-col items-center justify-center gap-2 ">
-              <LoginPageInputField label="Username:" placeholder="username" />
-              <LoginPageInputField label="Password:" placeholder="password" />
+              <LoginPageInputField
+                label="Username:"
+                placeholder="username"
+                required={true}
+                register={register}
+                name="username"
+                inputType="text"
+                errors={errors}
+              />
+              <LoginPageInputField
+                label="Password:"
+                placeholder="password"
+                required={true}
+                register={register}
+                name="password"
+                inputType="password"
+                errors={errors}
+              />
               <div className="flex justify-end w-full gap-3">
                 <CustomButton
                   buttonLabel="Login"
                   buttonColor="bg-blue-500"
                   hoverColor="bg-blue-600"
-                  handleButtonClicked={handleLoginButtonClicked}
+                  buttonType="submit"
                 />
                 <CustomButton
                   buttonLabel="Register"
                   buttonColor="bg-teal-500"
                   hoverColor="bg-teal-600"
                   handleButtonClicked={handleRegisterButtonClicked}
+                  buttonType="button"
                 />
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
