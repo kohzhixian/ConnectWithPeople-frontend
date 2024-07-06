@@ -1,8 +1,10 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
+import { loginSchema } from "../schemas/loginSchema";
 import { LoginInputs } from "../types/reducer/authentication.type";
 
 export const LoginPage = ({
@@ -16,7 +18,11 @@ export const LoginPage = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginInputs>();
+  } = useForm<LoginInputs>({
+    resolver: yupResolver(loginSchema),
+    mode: "onSubmit",
+    reValidateMode: "onChange", //revalidate input fields during onChange
+  });
 
   const loginFormOnSubmit: SubmitHandler<LoginInputs> = (data) => {
     console.log(data);
@@ -48,7 +54,6 @@ export const LoginPage = ({
               <LoginPageInputField
                 label="Username:"
                 placeholder="username"
-                required={true}
                 register={register}
                 name="username"
                 inputType="text"
@@ -57,7 +62,6 @@ export const LoginPage = ({
               <LoginPageInputField
                 label="Password:"
                 placeholder="password"
-                required={true}
                 register={register}
                 name="password"
                 inputType="password"
