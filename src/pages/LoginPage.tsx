@@ -6,6 +6,7 @@ import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
 import { loginSchema } from "../schemas/loginSchema";
 import { LoginInputs } from "../types/reducer/authentication.type";
+import { useLoginMutation } from "../services/authentication.api";
 
 export const LoginPage = ({
   setIsValidUser,
@@ -25,10 +26,21 @@ export const LoginPage = ({
     reValidateMode: "onChange", //revalidate input fields during onChange
   });
 
-  const loginFormOnSubmit: SubmitHandler<LoginInputs> = (data) => {
-    console.log(data);
-    setIsValidUser(true);
-    navigate("/", { replace: true });
+  const [postData, { isLoading: isPosting }] = useLoginMutation();
+
+  const loginFormOnSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    try {
+      const result = await postData({
+        username: data.username,
+        password: data.password,
+      }).unwrap();
+      if (result) {
+        setIsValidUser(true);
+        navigate("/", { replace: true });
+      }
+    } catch (err) {
+      console.error("Failed to login", err);
+    }
   };
 
   // functions
@@ -50,6 +62,7 @@ export const LoginPage = ({
           <form
             className="flex flex-1 items-center justify-center bg-gray-50 h-full"
             onSubmit={handleSubmit(loginFormOnSubmit)}
+            autoComplete="off"
           >
             <div className="flex flex-col items-center justify-center gap-2 ">
               <LoginPageInputField
