@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
@@ -7,6 +7,8 @@ import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField
 import { loginSchema } from "../schemas/loginSchema";
 import { useLoginMutation } from "../services/authentication.api";
 import { LoginInputs } from "../types/reducer/authentication.type";
+import { ErrorModal } from "../components/modals/ErrorModal";
+import { LoginPageConstants } from "../constants/LoginPage.constants";
 
 export const LoginPage = ({
   setIsValidUser,
@@ -15,6 +17,20 @@ export const LoginPage = ({
 }) => {
   // constants
   const navigate = useNavigate();
+  interface loginErrorMessage {
+    status: number;
+    data: { ErrorMessage: string };
+  }
+  // use states
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<loginErrorMessage | undefined>(
+    undefined
+  );
+
+  // rtk query
+  const [postData, { isLoading: isPosting }] = useLoginMutation();
+
+  // react hook form
   const {
     register,
     handleSubmit,
@@ -25,8 +41,6 @@ export const LoginPage = ({
     mode: "onSubmit",
     reValidateMode: "onChange", //revalidate input fields during onChange
   });
-
-  const [postData, { isLoading: isPosting }] = useLoginMutation();
 
   const loginFormOnSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
@@ -41,7 +55,11 @@ export const LoginPage = ({
         navigate("/", { replace: true });
       }
     } catch (err) {
-      console.error("Failed to login", err);
+      if (err) {
+        console.error(err);
+        setErrorMsg(err as loginErrorMessage);
+        setShowErrorModal(true);
+      }
     }
   };
 
@@ -52,6 +70,11 @@ export const LoginPage = ({
     e.preventDefault();
     navigate("/register", { replace: false });
   };
+
+  const handleErrorModalButtonClicked = () => {
+    setShowErrorModal(false);
+  };
+
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -104,6 +127,14 @@ export const LoginPage = ({
           </form>
         </div>
       </div>
+      {showErrorModal && (
+        <ErrorModal
+          errorMsg={
+            LoginPageConstants.LOGIN_FAILED_MSG + errorMsg?.data.ErrorMessage
+          }
+          handleButtonClicked={handleErrorModalButtonClicked}
+        />
+      )}
     </div>
   );
 };
