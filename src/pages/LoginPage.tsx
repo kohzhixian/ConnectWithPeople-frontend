@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
 import { loginSchema } from "../schemas/loginSchema";
-import { LoginInputs } from "../types/reducer/authentication.type";
 import { useLoginMutation } from "../services/authentication.api";
+import { LoginInputs } from "../types/reducer/authentication.type";
 
 export const LoginPage = ({
   setIsValidUser,
@@ -34,7 +34,9 @@ export const LoginPage = ({
         username: data.username,
         password: data.password,
       }).unwrap();
+
       if (result) {
+        localStorage.setItem("token", result.tokenData.token);
         setIsValidUser(true);
         navigate("/", { replace: true });
       }

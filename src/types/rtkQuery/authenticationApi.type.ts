@@ -3,11 +3,13 @@ export interface LoginRequestType {
   password: string;
 }
 
-export interface LoginResponseType {
+interface tokenDataType {
+  name: string;
+  phone_number: number;
   token: string;
-  user: {
-    id: number;
-    username: string;
-    // permissions: [];
-  };
+  username: string;
+}
+
+export interface LoginResponseType {
+  tokenData: tokenDataType;
 }
