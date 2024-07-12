@@ -1,5 +1,5 @@
 export interface AuthenticationInterface {
-  username: string;
+  isAuthenticated: boolean;
 }
 
 export type LoginInputs = {

@@ -1,22 +1,22 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
+import { ErrorModal } from "../components/modals/ErrorModal";
+import { LoginPageConstants } from "../constants/LoginPage.constants";
+import { useAppDispatch } from "../redux/hooks";
+import { loginSuccess } from "../redux/reducers/authentication.reducer";
 import { loginSchema } from "../schemas/loginSchema";
 import { useLoginMutation } from "../services/authentication.api";
 import { LoginInputs } from "../types/reducer/authentication.type";
-import { ErrorModal } from "../components/modals/ErrorModal";
-import { LoginPageConstants } from "../constants/LoginPage.constants";
 
-export const LoginPage = ({
-  setIsValidUser,
-}: {
-  setIsValidUser: Dispatch<SetStateAction<boolean>>;
-}) => {
+export const LoginPage = () => {
   // constants
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   interface loginErrorMessage {
     status: number;
     data: { ErrorMessage: string };
@@ -28,7 +28,7 @@ export const LoginPage = ({
   );
 
   // rtk query
-  const [postData, { isLoading: isPosting }] = useLoginMutation();
+  const [loginData, { isLoading: isPosting }] = useLoginMutation();
 
   // react hook form
   const {
@@ -44,19 +44,17 @@ export const LoginPage = ({
 
   const loginFormOnSubmit: SubmitHandler<LoginInputs> = async (data) => {
     try {
-      const result = await postData({
+      const result = await loginData({
         username: data.username,
         password: data.password,
       }).unwrap();
-
       if (result) {
         localStorage.setItem("token", result.tokenData.token);
-        setIsValidUser(true);
+        dispatch(loginSuccess());
         navigate("/", { replace: true });
       }
     } catch (err) {
       if (err) {
-        console.error(err);
         setErrorMsg(err as loginErrorMessage);
         setShowErrorModal(true);
       }
@@ -130,7 +128,9 @@ export const LoginPage = ({
       {showErrorModal && (
         <ErrorModal
           errorMsg={
-            LoginPageConstants.LOGIN_FAILED_MSG + errorMsg?.data.ErrorMessage
+            LoginPageConstants.LOGIN_FAILED_MSG + errorMsg?.data?.ErrorMessage
+              ? errorMsg?.data.ErrorMessage
+              : ""
           }
           handleButtonClicked={handleErrorModalButtonClicked}
         />

@@ -1,16 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { authenticationSlice } from "./reducers/authentication.reducer";
-import { authenticationApi } from "../services/authentication.api";
+import { authenticationApi, testApi } from "../services/authentication.api";
 
 export const store = configureStore({
   reducer: {
     authentication: authenticationSlice.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
+    [testApi.reducerPath]: testApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authenticationApi.middleware),
+    getDefaultMiddleware()
+      .concat(authenticationApi.middleware)
+      .concat(testApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,14 +1,16 @@
-import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { MainBackground } from "./components/MainBackground";
 import { MainPage } from "./components/MainPage";
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LoginPage } from "./pages/LoginPage";
+import { useAppSelector } from "./redux/hooks";
 
 function App() {
   // state
-  const [isValidUser, setIsValidUser] = useState<boolean>(false);
+  const isAuthenticated = useAppSelector(
+    (state) => state.authentication.isAuthenticated
+  );
 
   return (
     <BrowserRouter>
@@ -16,7 +18,7 @@ function App() {
         <Route
           path="/"
           element={
-            <PrivateRoute isValidUser={isValidUser} invalidRoute="/login">
+            <PrivateRoute isValidUser={isAuthenticated} invalidRoute="/login">
               <MainBackground>
                 <MainPage />
               </MainBackground>
@@ -27,10 +29,12 @@ function App() {
           path="/login"
           element={
             <MainBackground>
-              <LoginPage setIsValidUser={setIsValidUser} />
+              <LoginPage />
             </MainBackground>
           }
         />
+        <Route path="/404" element={<div>UNAUTHORIZED PAGE</div>} />
+        <Route path="/test" element={<div>test page</div>} />
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </BrowserRouter>
