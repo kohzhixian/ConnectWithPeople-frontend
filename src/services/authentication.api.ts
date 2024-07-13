@@ -18,7 +18,6 @@ const baseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:4000/api/v1",
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
-    console.log("token: ", token);
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
