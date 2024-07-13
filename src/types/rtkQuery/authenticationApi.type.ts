@@ -1,9 +1,11 @@
+import { JwtPayload } from "jwt-decode";
+
 export interface LoginRequestType {
   username: string;
   password: string;
 }
 
-export interface TokenDataType {
+export interface TokenDataType extends JwtPayload {
   name: string;
   userId: string;
   phone_number: number;

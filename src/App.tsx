@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { MainBackground } from "./components/MainBackground";
 import { MainPage } from "./components/MainPage";
-import { PrivateRoute } from "./components/PrivateRoute";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { useAppSelector } from "./redux/hooks";
 
@@ -18,11 +18,11 @@ function App() {
         <Route
           path="/"
           element={
-            <PrivateRoute isValidUser={isAuthenticated} invalidRoute="/login">
+            <ProtectedRoute isValidUser={isAuthenticated} invalidRoute="/login">
               <MainBackground>
                 <MainPage />
               </MainBackground>
-            </PrivateRoute>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -34,7 +34,16 @@ function App() {
           }
         />
         <Route path="/404" element={<div>UNAUTHORIZED PAGE</div>} />
-        <Route path="/test" element={<div>test page</div>} />
+        {/* <Route path="/test" element={<div>test page</div>} /> */}
+        <Route
+          path="/test"
+          element={
+            <ProtectedRoute isValidUser={isAuthenticated} invalidRoute="/login">
+              <div>TEST PAGE</div>
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </BrowserRouter>

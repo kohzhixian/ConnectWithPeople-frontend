@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../redux/hooks";
 import { logout } from "../redux/reducers/authentication.reducer";
 import { useTestQuery } from "../services/authentication.api";
@@ -10,6 +11,7 @@ export const MainPage = () => {
   //use state
   const [chatRoomSelected, setChatRoomSelected] = useState<string>("");
   const [showNewChatOverlay, setShowNewChatOverlay] = useState<boolean>(false);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   //use effects
 
@@ -35,6 +37,7 @@ export const MainPage = () => {
 
   const handleTestButtonClicked = () => {
     refetch();
+    navigate("/test");
   };
 
   const test1234 = testData?.message;
