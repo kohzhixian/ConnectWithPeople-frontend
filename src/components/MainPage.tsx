@@ -4,7 +4,7 @@ import { useAppDispatch } from "../redux/hooks";
 import { logout } from "../redux/reducers/authentication.reducer";
 import { useTestQuery } from "../services/authentication.api";
 import { CustomButton } from "./CustomButton";
-import { NewChatOVerlay } from "./NewChatOverlay";
+import { NewChatOverlay } from "./NewChatOverlay";
 import { Sidebar } from "./Sidebar";
 import { TopPanel } from "./TopPanel";
 export const MainPage = () => {
@@ -46,7 +46,7 @@ export const MainPage = () => {
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
         <div className="flex w-full h-full overflow-hidden">
           {showNewChatOverlay ? (
-            <NewChatOVerlay setShowNewChatOverlay={setShowNewChatOverlay} />
+            <NewChatOverlay setShowNewChatOverlay={setShowNewChatOverlay} />
           ) : (
             <Sidebar
               chatRoomSelected={chatRoomSelected}

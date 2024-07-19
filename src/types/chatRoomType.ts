@@ -7,3 +7,7 @@ export interface chatRoomInterface {
   messageSent: string;
   dateMessageWasSent: string;
 }
+
+export interface ContactSeparatorDivType {
+  label: string;
+}
