@@ -10,6 +10,7 @@ import { ContactSeparatorDiv } from "./ContactsSeparatorDiv";
 import { NewChatOverlayItem } from "./NewChatOverlayItem";
 import { SearchTextfield } from "./SearchTextfield";
 import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
+import mockImage2 from "../assets/images/mock-test-image2.jpg";
 
 export const NewChatOverlay = ({
   setShowNewChatOverlay,
@@ -39,6 +40,7 @@ export const NewChatOverlay = ({
             key={data.id}
             newChatOverlayItemIcon={data.newChatOverlayItemIcon}
             newChatOverlayItemLabel={data.newChatOverlayItemLabel}
+            isContact={false}
           />
         ))}
 
@@ -56,7 +58,12 @@ export const NewChatOverlay = ({
                     contactDetails: getContactByUserIdResponseType,
                     index: number
                   ) => (
-                    <div key={index}>{contactDetails.contact_name}</div>
+                    <NewChatOverlayItem
+                      key={index}
+                      newChatOverlayItemIcon={mockImage2}
+                      newChatOverlayItemLabel={contactDetails.contact_name}
+                      isContact={true}
+                    />
                   )
                 )}
               </>
