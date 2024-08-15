@@ -54,12 +54,9 @@ export const NewChatOverlay = ({
               <>
                 <ContactSeparatorDiv key={data.key} label={data.key} />
                 {data.contact.map(
-                  (
-                    contactDetails: getContactByUserIdResponseType,
-                    index: number
-                  ) => (
+                  (contactDetails: getContactByUserIdResponseType) => (
                     <NewChatOverlayItem
-                      key={index}
+                      key={contactDetails.contact_phone_num}
                       newChatOverlayItemIcon={mockImage2}
                       newChatOverlayItemLabel={contactDetails.contact_name}
                       isContact={true}
