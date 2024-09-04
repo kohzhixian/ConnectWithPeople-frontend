@@ -24,3 +24,5 @@ export const contactApi = createApi({
 });
 
 export const { useAddContactMutation, useGetContactByUserIdQuery } = contactApi;
+
+export default contactApi;
