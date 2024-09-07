@@ -1,16 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../redux/hooks";
-import { logout } from "../redux/reducers/authentication.reducer";
-import { CustomButton } from "./CustomButton";
-import { NewChatOverlay } from "./NewChatOverlay";
-import { Sidebar } from "./Sidebar";
-import { TopPanel } from "./TopPanel";
-import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
+import { NewChatOverlay } from "./NewChatOverlay";
+import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
+import { Sidebar } from "./Sidebar";
 export const MainPage = () => {
   //use state
-  const [chatRoomSelected, setChatRoomSelected] = useState<string>("");
+  const [selectedChatroom, setSelectedChatroom] = useState<string>("");
   const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
     useState<boolean>(false);
   const [showNewChatOverlay, setNewChatOverlay] = useState<boolean>(false);
@@ -19,7 +15,7 @@ export const MainPage = () => {
 
   //functions
   const handleChatRoomClick = (id: string) => {
-    setChatRoomSelected(id);
+    setSelectedChatroom(id);
     setNewChatOverlay(true);
   };
   const handleNewChatIconClicked = () => {
@@ -40,9 +36,11 @@ export const MainPage = () => {
             />
           ) : (
             <Sidebar
-              chatRoomSelected={chatRoomSelected}
+              selectedChatroom={selectedChatroom}
               handleChatRoomClick={handleChatRoomClick}
               handleChatIconClicked={handleNewChatIconClicked}
+              setSelectedChatroom={setSelectedChatroom}
+              setNewChatOverlay={setNewChatOverlay}
             />
           )}
           {showNewChatOverlay ? <ChatRoomOverlay /> : <NoChatroomOpenedDiv />}

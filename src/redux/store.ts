@@ -3,6 +3,7 @@ import { authenticationApi } from "../services/authentication.api";
 import { authenticationSlice } from "./reducers/authentication.reducer";
 import { contactApi } from "../services/contact.api";
 import { chatroomApi } from "../services/chatroom.api";
+import messageApi from "../services/message.api";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [contactApi.reducerPath]: contactApi.reducer,
     [chatroomApi.reducerPath]: chatroomApi.reducer,
+    [messageApi.reducerPath]: messageApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
@@ -17,7 +19,8 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(authenticationApi.middleware)
       .concat(contactApi.middleware)
-      .concat(chatroomApi.middleware),
+      .concat(chatroomApi.middleware)
+      .concat(messageApi.middleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,6 +1,9 @@
+import { Dispatch, SetStateAction, useEffect } from "react";
+import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
+import { useGetAllMessageByChatroomIdQuery } from "../services/message.api";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
@@ -8,16 +11,19 @@ import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
-import mockImage2 from "../assets/images/mock-test-image2.jpg";
 
 export const Sidebar = ({
-  chatRoomSelected,
+  selectedChatroom,
   handleChatRoomClick,
   handleChatIconClicked,
+  setSelectedChatroom,
+  setNewChatOverlay,
 }: {
-  chatRoomSelected: string;
+  selectedChatroom: string;
   handleChatRoomClick: (id: string) => void;
   handleChatIconClicked: () => void;
+  setSelectedChatroom: Dispatch<SetStateAction<string>>;
+  setNewChatOverlay: Dispatch<SetStateAction<boolean>>;
 }) => {
   // rtk query
   const {
@@ -25,6 +31,36 @@ export const Sidebar = ({
     error: chatroomError,
     isLoading: chatroomIsLoading,
   } = useGetChatroomsByUserIdQuery(undefined);
+
+  const {
+    data: messageData,
+    error: messageError,
+    isLoading: messageIsLoading,
+  } = useGetAllMessageByChatroomIdQuery(selectedChatroom, {
+    skip: !selectedChatroom || selectedChatroom === "",
+  });
+
+  console.log("selected chat room: ", selectedChatroom);
+  console.log("message data: ", messageData);
+
+  // functions
+  const handleEscButtonPressed = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      setSelectedChatroom("");
+      setNewChatOverlay(false);
+    }
+  };
+
+  // use effect
+  useEffect(() => {
+    // Add Event listner when the component mounts
+    document.addEventListener("keydown", handleEscButtonPressed);
+
+    // Cleanup event listener when the component unmounts
+    return () => {
+      document.removeEventListener("keydown", handleEscButtonPressed);
+    };
+  });
 
   return (
     <div className="flex-CND_flex max-w-30% flex-col overflow-hidden h-full">
@@ -51,18 +87,19 @@ export const Sidebar = ({
           />
         </div>
         <div className="w-full h-full overflow-y-scroll">
-          {chatroomIsLoading
+          {chatroomIsLoading || messageIsLoading
             ? "LOADING..."
-            : chatroomData.map((data: ChatroomInterface) => (
+            : chatroomData &&
+              chatroomData.map((data: ChatroomInterface) => (
                 <ChatRoom
                   key={data.id}
                   id={data.id}
                   chatRoomImage={mockImage2}
                   chatRoomTitle={data.chatroom_name}
                   latestSentMessageDate={"date"}
-                  messageSent={"message"}
+                  lastestMessageSentInChatroom={"message"}
                   sender={"sender"}
-                  isClicked={chatRoomSelected === data.id}
+                  isClicked={selectedChatroom === data.id}
                   handleChatRoomClick={handleChatRoomClick}
                 />
               ))}

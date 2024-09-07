@@ -7,7 +7,7 @@ export const ChatRoom = ({
   chatRoomImage,
   chatRoomTitle,
   sender,
-  messageSent,
+  lastestMessageSentInChatroom,
   latestSentMessageDate,
   isClicked,
   handleChatRoomClick,
@@ -16,7 +16,7 @@ export const ChatRoom = ({
   chatRoomImage: string;
   chatRoomTitle: string;
   sender: string;
-  messageSent: string;
+  lastestMessageSentInChatroom: string;
   latestSentMessageDate: string;
   isClicked: boolean;
   handleChatRoomClick: (id: string) => void;
@@ -43,7 +43,9 @@ export const ChatRoom = ({
           <div className="flex flex-row min-h-[20px] text-[14px] text-secondaryStronger truncate font-normal w-[399px] m-t-[2px]">
             <div className="inline-flex w-auto">{sender}</div>
             <span>:&nbsp;</span>
-            <span className="truncate w-auto">{messageSent}</span>
+            <span className="truncate w-auto">
+              {lastestMessageSentInChatroom}
+            </span>
           </div>
         </div>
       </Fragment>
