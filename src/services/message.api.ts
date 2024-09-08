@@ -11,9 +11,16 @@ export const messageApi = createApi({
         params: { ChatroomId: chatroomId },
       }),
     }),
+
+    getAllMessageLinkedToUser: builder.query({
+      query: () => "/message/getAllMessageLinkedToUser",
+    }),
   }),
 });
 
-export const { useGetAllMessageByChatroomIdQuery } = messageApi;
+export const {
+  useGetAllMessageByChatroomIdQuery,
+  useGetAllMessageLinkedToUserQuery,
+} = messageApi;
 
 export default messageApi;

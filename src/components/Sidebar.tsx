@@ -3,7 +3,10 @@ import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
-import { useGetAllMessageByChatroomIdQuery } from "../services/message.api";
+import {
+  useGetAllMessageByChatroomIdQuery,
+  useGetAllMessageLinkedToUserQuery,
+} from "../services/message.api";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
@@ -33,15 +36,18 @@ export const Sidebar = ({
   } = useGetChatroomsByUserIdQuery(undefined);
 
   const {
-    data: messageData,
-    error: messageError,
-    isLoading: messageIsLoading,
+    data: individualChatroomMessageData,
+    error: individualChatroomMessageError,
+    isLoading: individualChatroomMessageIsLoading,
   } = useGetAllMessageByChatroomIdQuery(selectedChatroom, {
     skip: !selectedChatroom || selectedChatroom === "",
   });
 
-  console.log("selected chat room: ", selectedChatroom);
-  console.log("message data: ", messageData);
+  const {
+    data: allMessageData,
+    error: allMessageError,
+    isLoading: allMessageIsLoading,
+  } = useGetAllMessageLinkedToUserQuery(undefined);
 
   // functions
   const handleEscButtonPressed = (event: KeyboardEvent) => {
@@ -87,7 +93,7 @@ export const Sidebar = ({
           />
         </div>
         <div className="w-full h-full overflow-y-scroll">
-          {chatroomIsLoading || messageIsLoading
+          {chatroomIsLoading || individualChatroomMessageIsLoading
             ? "LOADING..."
             : chatroomData &&
               chatroomData.map((data: ChatroomInterface) => (
