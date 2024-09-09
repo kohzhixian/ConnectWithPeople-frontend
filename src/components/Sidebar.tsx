@@ -6,7 +6,9 @@ import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import {
   useGetAllMessageByChatroomIdQuery,
   useGetAllMessageLinkedToUserQuery,
+  useGetLatestMsgForAllChatroomLinkedToUserQuery,
 } from "../services/message.api";
+import { formattedMessageInterface } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
@@ -49,6 +51,11 @@ export const Sidebar = ({
     isLoading: allMessageIsLoading,
   } = useGetAllMessageLinkedToUserQuery(undefined);
 
+  const {
+    data: latestMessageData,
+    error: latestMessageError,
+    isLoading: latestMessageIsLoading,
+  } = useGetLatestMsgForAllChatroomLinkedToUserQuery(undefined);
   // functions
   const handleEscButtonPressed = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
@@ -67,6 +74,17 @@ export const Sidebar = ({
       document.removeEventListener("keydown", handleEscButtonPressed);
     };
   });
+
+  // functions
+  const renderLatestMessage = (chatroomId: string) => {
+    let latestMessage: string = "";
+    latestMessageData.map((data: formattedMessageInterface) => {
+      if (data.chatroom_id === chatroomId && data.message) {
+        latestMessage = data.message;
+      }
+    });
+    return latestMessage;
+  };
 
   return (
     <div className="flex-CND_flex max-w-30% flex-col overflow-hidden h-full">
@@ -93,7 +111,7 @@ export const Sidebar = ({
           />
         </div>
         <div className="w-full h-full overflow-y-scroll">
-          {chatroomIsLoading || individualChatroomMessageIsLoading
+          {chatroomIsLoading || latestMessageIsLoading
             ? "LOADING..."
             : chatroomData &&
               chatroomData.map((data: ChatroomInterface) => (
@@ -103,7 +121,7 @@ export const Sidebar = ({
                   chatRoomImage={mockImage2}
                   chatRoomTitle={data.chatroom_name}
                   latestSentMessageDate={"date"}
-                  lastestMessageSentInChatroom={"message"}
+                  lastestMessageSentInChatroom={renderLatestMessage(data.id)}
                   sender={"sender"}
                   isClicked={selectedChatroom === data.id}
                   handleChatRoomClick={handleChatRoomClick}

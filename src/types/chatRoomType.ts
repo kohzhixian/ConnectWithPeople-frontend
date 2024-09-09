@@ -9,3 +9,8 @@ export interface ChatroomDataType {
   creaated_at: string;
   updated_at: string;
 }
+
+export interface formattedMessageInterface {
+  chatroom_id: string | undefined;
+  message: string | undefined;
+}
