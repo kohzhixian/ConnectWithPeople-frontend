@@ -4,20 +4,20 @@ import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
+import { ChatroomDataType } from "../types/chatRoomType";
 export const MainPage = () => {
   //use state
-  const [selectedChatroom, setSelectedChatroom] = useState<string>("");
+  const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
+  const [selectedChatroom, setSelectedChatroom] = useState<
+    ChatroomDataType | undefined
+  >(undefined);
   const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
     useState<boolean>(false);
-  const [showNewChatOverlay, setNewChatOverlay] = useState<boolean>(false);
+  const [chatroomOverlay, setChatroomOverlay] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   //use effects
 
   //functions
-  const handleChatRoomClick = (id: string) => {
-    setSelectedChatroom(id);
-    setNewChatOverlay(true);
-  };
   const handleNewChatIconClicked = () => {
     setShowNewChatSidebarOverlay(true);
   };
@@ -36,14 +36,15 @@ export const MainPage = () => {
             />
           ) : (
             <Sidebar
-              selectedChatroom={selectedChatroom}
-              handleChatRoomClick={handleChatRoomClick}
+              selectedChatroomId={selectedChatroomId}
               handleChatIconClicked={handleNewChatIconClicked}
+              setSelectedChatroomId={setSelectedChatroomId}
+              setChatroomOverlay={setChatroomOverlay}
+              selectedChatroom={selectedChatroom}
               setSelectedChatroom={setSelectedChatroom}
-              setNewChatOverlay={setNewChatOverlay}
             />
           )}
-          {showNewChatOverlay ? <ChatRoomOverlay /> : <NoChatroomOpenedDiv />}
+          {chatroomOverlay ? <ChatRoomOverlay /> : <NoChatroomOpenedDiv />}
         </div>
       </div>
     </div>

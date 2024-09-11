@@ -15,9 +15,9 @@ export const ChatRoom = ({
   id: string;
   chatRoomImage: string;
   chatRoomTitle: string;
-  sender: string;
-  lastestMessageSentInChatroom: string;
-  latestSentMessageDate: string;
+  sender: string | undefined;
+  lastestMessageSentInChatroom: string | undefined;
+  latestSentMessageDate: string | undefined;
   isClicked: boolean;
   handleChatRoomClick: (id: string) => void;
 }) => {

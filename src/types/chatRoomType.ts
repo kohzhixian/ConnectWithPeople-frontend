@@ -13,4 +13,6 @@ export interface ChatroomDataType {
 export interface formattedMessageInterface {
   chatroom_id: string | undefined;
   message: string | undefined;
+  sender: string | undefined;
+  date: string | undefined;
 }

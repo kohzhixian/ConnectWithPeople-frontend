@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
@@ -8,7 +8,10 @@ import {
   useGetAllMessageLinkedToUserQuery,
   useGetLatestMsgForAllChatroomLinkedToUserQuery,
 } from "../services/message.api";
-import { formattedMessageInterface } from "../types/chatRoomType";
+import {
+  ChatroomDataType,
+  formattedMessageInterface,
+} from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
@@ -16,19 +19,21 @@ import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
+import dayjs from "dayjs";
 
 export const Sidebar = ({
-  selectedChatroom,
-  handleChatRoomClick,
+  selectedChatroomId,
   handleChatIconClicked,
-  setSelectedChatroom,
-  setNewChatOverlay,
+  setSelectedChatroomId,
+  setChatroomOverlay,
+  selectedChatroom,
 }: {
-  selectedChatroom: string;
-  handleChatRoomClick: (id: string) => void;
+  selectedChatroomId: string;
   handleChatIconClicked: () => void;
-  setSelectedChatroom: Dispatch<SetStateAction<string>>;
-  setNewChatOverlay: Dispatch<SetStateAction<boolean>>;
+  setSelectedChatroomId: Dispatch<SetStateAction<string>>;
+  setChatroomOverlay: Dispatch<SetStateAction<boolean>>;
+  selectedChatroom: ChatroomDataType | undefined;
+  setSelectedChatroom: Dispatch<SetStateAction<ChatroomDataType | undefined>>;
 }) => {
   // rtk query
   const {
@@ -41,27 +46,27 @@ export const Sidebar = ({
     data: individualChatroomMessageData,
     error: individualChatroomMessageError,
     isLoading: individualChatroomMessageIsLoading,
-  } = useGetAllMessageByChatroomIdQuery(selectedChatroom, {
-    skip: !selectedChatroom || selectedChatroom === "",
+  } = useGetAllMessageByChatroomIdQuery(selectedChatroomId, {
+    skip: !selectedChatroomId || selectedChatroomId === "",
   });
-
-  const {
-    data: allMessageData,
-    error: allMessageError,
-    isLoading: allMessageIsLoading,
-  } = useGetAllMessageLinkedToUserQuery(undefined);
 
   const {
     data: latestMessageData,
     error: latestMessageError,
     isLoading: latestMessageIsLoading,
   } = useGetLatestMsgForAllChatroomLinkedToUserQuery(undefined);
+
   // functions
   const handleEscButtonPressed = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      setSelectedChatroom("");
-      setNewChatOverlay(false);
+      setSelectedChatroomId("");
+      setChatroomOverlay(false);
     }
+  };
+
+  const handleChatRoomClick = (id: string) => {
+    setSelectedChatroomId(id);
+    setChatroomOverlay(true);
   };
 
   // use effect
@@ -74,16 +79,41 @@ export const Sidebar = ({
       document.removeEventListener("keydown", handleEscButtonPressed);
     };
   });
-
   // functions
   const renderLatestMessage = (chatroomId: string) => {
-    let latestMessage: string = "";
-    latestMessageData.map((data: formattedMessageInterface) => {
-      if (data.chatroom_id === chatroomId && data.message) {
-        latestMessage = data.message;
-      }
-    });
-    return latestMessage;
+    const latestMessageDetails: formattedMessageInterface =
+      latestMessageData.find(
+        (data: formattedMessageInterface) => data.chatroom_id === chatroomId
+      );
+    const currentDate = dayjs(new Date());
+
+    const latestMessageDate = dayjs(latestMessageDetails.date);
+
+    const clonedLatestMessageDetails = { ...latestMessageDetails };
+
+    if (currentDate.isSame(latestMessageDate)) {
+      clonedLatestMessageDetails.date = "Today";
+    } else if (currentDate.isSame(latestMessageDate.add(1, "day"), "day")) {
+      clonedLatestMessageDetails.date = "Yesterday";
+    } else {
+      clonedLatestMessageDetails.date = dayjs(latestMessageDetails.date).format(
+        "DD/MM/YYYY"
+      );
+    }
+
+    if (clonedLatestMessageDetails) {
+      return {
+        message: clonedLatestMessageDetails.message,
+        sender: clonedLatestMessageDetails.sender,
+        date: clonedLatestMessageDetails.date,
+      };
+    }
+
+    return {
+      message: "",
+      sender: "",
+      date: "",
+    };
   };
 
   return (
@@ -114,19 +144,22 @@ export const Sidebar = ({
           {chatroomIsLoading || latestMessageIsLoading
             ? "LOADING..."
             : chatroomData &&
-              chatroomData.map((data: ChatroomInterface) => (
-                <ChatRoom
-                  key={data.id}
-                  id={data.id}
-                  chatRoomImage={mockImage2}
-                  chatRoomTitle={data.chatroom_name}
-                  latestSentMessageDate={"date"}
-                  lastestMessageSentInChatroom={renderLatestMessage(data.id)}
-                  sender={"sender"}
-                  isClicked={selectedChatroom === data.id}
-                  handleChatRoomClick={handleChatRoomClick}
-                />
-              ))}
+              chatroomData.map((data: ChatroomInterface) => {
+                const { message, sender, date } = renderLatestMessage(data.id);
+                return (
+                  <ChatRoom
+                    key={data.id}
+                    id={data.id}
+                    chatRoomImage={mockImage2}
+                    chatRoomTitle={data.chatroom_name}
+                    latestSentMessageDate={date}
+                    lastestMessageSentInChatroom={message}
+                    sender={sender}
+                    isClicked={selectedChatroomId === data.id}
+                    handleChatRoomClick={handleChatRoomClick}
+                  />
+                );
+              })}
         </div>
       </div>
     </div>
