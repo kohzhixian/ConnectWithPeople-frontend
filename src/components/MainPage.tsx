@@ -44,7 +44,11 @@ export const MainPage = () => {
               setSelectedChatroom={setSelectedChatroom}
             />
           )}
-          {chatroomOverlay ? <ChatRoomOverlay /> : <NoChatroomOpenedDiv />}
+          {chatroomOverlay ? (
+            <ChatRoomOverlay chatroomId={selectedChatroomId} />
+          ) : (
+            <NoChatroomOpenedDiv />
+          )}
         </div>
       </div>
     </div>

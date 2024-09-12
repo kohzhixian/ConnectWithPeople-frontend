@@ -26,6 +26,7 @@ export const Sidebar = ({
   setSelectedChatroomId,
   setChatroomOverlay,
   selectedChatroom,
+  setSelectedChatroom,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
@@ -80,24 +81,27 @@ export const Sidebar = ({
   });
   // functions
   const renderLatestMessage = (chatroomId: string) => {
-    const latestMessageDetails: formattedMessageInterface =
-      latestMessageData.find(
+    let latestMessageDetails: formattedMessageInterface | null = null;
+    if (chatroomId) {
+      latestMessageDetails = latestMessageData.find(
         (data: formattedMessageInterface) => data.chatroom_id === chatroomId
       );
+    }
+
     const currentDate = dayjs(new Date());
 
-    const latestMessageDate = dayjs(latestMessageDetails.date);
+    const latestMessageDate = dayjs(latestMessageDetails?.date);
 
     const clonedLatestMessageDetails = { ...latestMessageDetails };
-
-    if (currentDate.isSame(latestMessageDate)) {
+    if (currentDate.isSame(latestMessageDate, "day")) {
+      console.log("enter if condition");
       clonedLatestMessageDetails.date = "Today";
     } else if (currentDate.isSame(latestMessageDate.add(1, "day"), "day")) {
       clonedLatestMessageDetails.date = "Yesterday";
     } else {
-      clonedLatestMessageDetails.date = dayjs(latestMessageDetails.date).format(
-        "DD/MM/YYYY"
-      );
+      clonedLatestMessageDetails.date = dayjs(
+        latestMessageDetails?.date
+      ).format("DD/MM/YYYY");
     }
 
     if (clonedLatestMessageDetails) {

@@ -8,8 +8,16 @@ export const chatroomApi = createApi({
     getChatroomsByUserId: builder.query({
       query: () => "/chatroom/getAllChatroomByUserId",
     }),
+
+    getChatroomDetailsById: builder.query({
+      query: (chatroomId: string) => ({
+        url: "/chatroom/getChatroomDetailsById",
+        params: { chatroomId: chatroomId },
+      }),
+    }),
   }),
 });
-export const { useGetChatroomsByUserIdQuery } = chatroomApi;
+export const { useGetChatroomsByUserIdQuery, useGetChatroomDetailsByIdQuery } =
+  chatroomApi;
 
 export default chatroomApi;

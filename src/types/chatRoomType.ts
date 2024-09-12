@@ -16,3 +16,11 @@ export interface formattedMessageInterface {
   sender: string | undefined;
   date: string | undefined;
 }
+
+export interface formattedChatroomMessageType {
+  text: string;
+  status: string;
+  updated_at: string;
+  username: string;
+  id: string;
+}
