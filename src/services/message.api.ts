@@ -12,10 +12,6 @@ export const messageApi = createApi({
       }),
     }),
 
-    getAllMessageLinkedToUser: builder.query({
-      query: () => "/message/getAllMessageLinkedToUser",
-    }),
-
     getLatestMsgForAllChatroomLinkedToUser: builder.query({
       query: () => "/message/getLatestMsgForAllChatroomLinkedToUser",
     }),
@@ -24,7 +20,6 @@ export const messageApi = createApi({
 
 export const {
   useGetAllMessageByChatroomIdQuery,
-  useGetAllMessageLinkedToUserQuery,
   useGetLatestMsgForAllChatroomLinkedToUserQuery,
 } = messageApi;
 

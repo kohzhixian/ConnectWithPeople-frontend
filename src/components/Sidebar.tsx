@@ -1,11 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import {
   useGetAllMessageByChatroomIdQuery,
-  useGetAllMessageLinkedToUserQuery,
   useGetLatestMsgForAllChatroomLinkedToUserQuery,
 } from "../services/message.api";
 import {
@@ -19,7 +19,6 @@ import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
-import dayjs from "dayjs";
 
 export const Sidebar = ({
   selectedChatroomId,
