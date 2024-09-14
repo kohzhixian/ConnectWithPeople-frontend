@@ -82,7 +82,7 @@ export const Sidebar = ({
   // functions
   const renderLatestMessage = (chatroomId: string) => {
     let latestMessageDetails: formattedMessageInterface | null = null;
-    if (chatroomId) {
+    if (latestMessageData) {
       latestMessageDetails = latestMessageData.find(
         (data: formattedMessageInterface) => data.chatroom_id === chatroomId
       );

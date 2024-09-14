@@ -18,6 +18,9 @@ export default {
         secondaryStronger: "#3b4a54",
         backgroundDefaultActive: "#f0f2f5",
         panelBackgroundColor: "#008069",
+        secondary: "#667781",
+        outgoingBackground: "#d9fdd3",
+        chatroomBackground: "#f5f1e8",
       },
       flex: {
         CND_flex: "0 0 30%",
