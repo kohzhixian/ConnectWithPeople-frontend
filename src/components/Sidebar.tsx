@@ -94,7 +94,6 @@ export const Sidebar = ({
 
     const clonedLatestMessageDetails = { ...latestMessageDetails };
     if (currentDate.isSame(latestMessageDate, "day")) {
-      console.log("enter if condition");
       clonedLatestMessageDetails.date = "Today";
     } else if (currentDate.isSame(latestMessageDate.add(1, "day"), "day")) {
       clonedLatestMessageDetails.date = "Yesterday";

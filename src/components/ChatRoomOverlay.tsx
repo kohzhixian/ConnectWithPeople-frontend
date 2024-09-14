@@ -1,14 +1,17 @@
 import { Fragment } from "react/jsx-runtime";
 import { useGetChatroomDetailsByIdQuery } from "../services/chatroom.api";
-import { TopPanel } from "./TopPanel";
-import { useEffect, useState } from "react";
 import { formattedChatroomMessageType } from "../types/chatRoomType";
-import { TopPanelProfile } from "./TopPanelProfile";
-import dayjs from "dayjs";
-import { Doubletick } from "./Icons/Doubletick";
 import { ChatroomMessage } from "./chatroomMessage";
+import { AttachIcon } from "./Icons/AttachIcon";
+import { Emoticon } from "./Icons/Emoticon";
+import { TopPanel } from "./TopPanel";
+import { TopPanelProfile } from "./TopPanelProfile";
+import { ChangeEventHandler, EventHandler, useState } from "react";
+import { useCreateMessageMutation } from "../services/message.api";
 
 export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
+  //use states
+  const [message, setMessage] = useState<string>("");
   // rtk query
   const {
     data: chatroomDetailsData,
@@ -18,6 +21,8 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
     skip: !chatroomId || chatroomId === "",
   });
 
+  const [messageData, { isLoading: isPosting }] = useCreateMessageMutation();
+
   const chatroomName = chatroomDetailsData
     ? Object.keys(chatroomDetailsData)[0]
     : null;
@@ -25,6 +30,30 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
   const convertISOstringToTime = (ISOstring: string) => {
     const date = new Date(ISOstring);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  //functions
+  const handleMessageInputfieldOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMessage(event.target.value);
+  };
+
+  const handleMessageInputfieldOnKeydown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      try {
+        const result = await messageData({
+          text: message,
+          chatroom_id: chatroomId,
+        }).unwrap();
+      } catch (err) {
+        console.error(err);
+      }
+      setMessage("");
+    }
   };
 
   return (
@@ -46,20 +75,43 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
               </div>
             </div>
           </TopPanel>
-          <div className="bg-chatroomBackground h-full">
+          <div className="bg-chatroomBackground h-[90%] ">
             {chatroomDetailsData &&
               !chatroomDetailsIsLoading &&
               chatroomName &&
               chatroomDetailsData[Object.keys(chatroomDetailsData)[0]].map(
                 (data: formattedChatroomMessageType) => (
                   <ChatroomMessage
-                    key={data.id}
+                    key={data.messageId}
                     text={data.text}
                     time={convertISOstringToTime(data.updated_at)}
                     status="sent"
                   />
                 )
               )}
+          </div>
+          <div className="flex max-w-full min-h-[62px] px-4 pb-[5px] bg-backgroundDefaultActive">
+            <div className="flex items-center w-[88px] h-auto">
+              <div className="mx-2 w-[26px]">
+                <Emoticon />
+              </div>
+              <div className="p-2">
+                <AttachIcon />
+              </div>
+            </div>
+            <div className="mx-2 my-[5px] w-full h-[52px] flex items-center">
+              <form className="w-full">
+                <input
+                  className="flex w-full  px-3 py-[9px] rounded-[8px] border border-white focus:outline-none"
+                  id="messageInputField"
+                  type="text"
+                  value={message}
+                  onChange={handleMessageInputfieldOnChange}
+                  onKeyDown={handleMessageInputfieldOnKeydown}
+                  placeholder={!message ? "Type a message" : ""}
+                />
+              </form>
+            </div>
           </div>
         </div>
       )}
