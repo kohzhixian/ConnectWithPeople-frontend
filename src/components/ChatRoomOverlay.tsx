@@ -1,17 +1,24 @@
+import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useGetChatroomDetailsByIdQuery } from "../services/chatroom.api";
+import { useCreateMessageMutation } from "../services/message.api";
 import { formattedChatroomMessageType } from "../types/chatRoomType";
+import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
 import { ChatroomMessage } from "./chatroomMessage";
 import { AttachIcon } from "./Icons/AttachIcon";
 import { Emoticon } from "./Icons/Emoticon";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
-import { ChangeEventHandler, EventHandler, useState } from "react";
-import { useCreateMessageMutation } from "../services/message.api";
 
 export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
+  // constants
+  const token = localStorage.getItem("token");
+  const decodedToken = jwtDecode<TokenDataType>(String(token));
+
   //use states
   const [message, setMessage] = useState<string>("");
+
   // rtk query
   const {
     data: chatroomDetailsData,
@@ -86,6 +93,8 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
                     text={data.text}
                     time={convertISOstringToTime(data.updated_at)}
                     status="sent"
+                    sender={data.userId}
+                    currentLoggedInUser={decodedToken.userId}
                   />
                 )
               )}
