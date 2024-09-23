@@ -5,6 +5,7 @@ import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { ChatroomDataType } from "../types/chatRoomType";
+import { WebSocketProvider } from "../hooks/WebSocketProvider";
 export const MainPage = () => {
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
@@ -45,7 +46,9 @@ export const MainPage = () => {
             />
           )}
           {chatroomOverlay ? (
-            <ChatRoomOverlay chatroomId={selectedChatroomId} />
+            <WebSocketProvider>
+              <ChatRoomOverlay chatroomId={selectedChatroomId} />
+            </WebSocketProvider>
           ) : (
             <NoChatroomOpenedDiv />
           )}

@@ -25,3 +25,7 @@ export interface formattedChatroomMessageType {
   messageId: string;
   userId: string;
 }
+
+export interface createMessageSocketType extends formattedChatroomMessageType {
+  chatroomId: string;
+}

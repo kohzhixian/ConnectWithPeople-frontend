@@ -1,9 +1,14 @@
+import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
+import { useWebSocket } from "../hooks/WebSocketProvider";
 import { useGetChatroomDetailsByIdQuery } from "../services/chatroom.api";
 import { useCreateMessageMutation } from "../services/message.api";
-import { formattedChatroomMessageType } from "../types/chatRoomType";
+import {
+  createMessageSocketType,
+  formattedChatroomMessageType,
+} from "../types/chatRoomType";
 import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
 import { ChatroomMessage } from "./chatroomMessage";
 import { AttachIcon } from "./Icons/AttachIcon";
@@ -16,14 +21,20 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
 
-  //use states
-  const [message, setMessage] = useState<string>("");
+  const { socket } = useWebSocket();
+
+  // use states
+  const [messageToSent, setMessageToSent] = useState<string>("");
+  const [messageToDisplay, setMessageToDisplay] = useState<
+    formattedChatroomMessageType[]
+  >([]);
 
   // rtk query
   const {
     data: chatroomDetailsData,
     error: chatroomDetailsError,
     isLoading: chatroomDetailsIsLoading,
+    refetch: refetchChatroomDetails,
   } = useGetChatroomDetailsByIdQuery(chatroomId, {
     skip: !chatroomId || chatroomId === "",
   });
@@ -34,16 +45,43 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
     ? Object.keys(chatroomDetailsData)[0]
     : null;
 
+  // use effects
+  useEffect(() => {
+    //listens for new message from the websocket server
+    socket?.on("send-message", (newMessage) => {
+      displayMessage(newMessage);
+    });
+
+    socket?.on("receive-message", (message) => {
+      displayMessage(message);
+    });
+
+    return () => {
+      socket?.off("send-message", () => {});
+      socket?.off("receive-message", () => {});
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (chatroomDetailsData && !chatroomDetailsIsLoading) {
+      const formattedChatroomMessage: formattedChatroomMessageType[] =
+        chatroomDetailsData[Object.keys(chatroomDetailsData)[0]];
+
+      setMessageToDisplay(formattedChatroomMessage);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chatroomDetailsData]);
+
+  // functions
   const convertISOstringToTime = (ISOstring: string) => {
     const date = new Date(ISOstring);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  //functions
   const handleMessageInputfieldOnChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setMessage(event.target.value);
+    setMessageToSent(event.target.value);
   };
 
   const handleMessageInputfieldOnKeydown = async (
@@ -52,15 +90,45 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
     if (event.key === "Enter") {
       event.preventDefault();
       try {
-        const result = await messageData({
-          text: message,
+        const messageId = await messageData({
+          text: messageToSent,
           chatroom_id: chatroomId,
         }).unwrap();
+
+        if (messageId) {
+          // follows the request type needed in the backend
+          socket?.emit("send-message", {
+            text: messageToSent,
+            status: "sent",
+            updated_at: dayjs(new Date()).toISOString(),
+            username: decodedToken.username,
+            messageId: messageId,
+            userId: decodedToken.userId,
+            chatroomId: chatroomId,
+          });
+          refetchChatroomDetails();
+        } else {
+          console.error("Failed to send message");
+        }
       } catch (err) {
         console.error(err);
       }
-      setMessage("");
+      setMessageToSent("");
     }
+  };
+
+  const displayMessage = (newMessage: createMessageSocketType) => {
+    const result = {
+      text: newMessage.text,
+      status: newMessage.status,
+      updated_at: newMessage.updated_at,
+      username: newMessage.username,
+      messageId: newMessage.messageId,
+      userId: newMessage.userId,
+    };
+    setMessageToDisplay((prev) => {
+      return [...prev, result];
+    });
   };
 
   return (
@@ -82,22 +150,20 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
               </div>
             </div>
           </TopPanel>
-          <div className="bg-chatroomBackground h-[90%] ">
+          <div className="bg-chatroomBackground h-[90%] overflow-auto">
             {chatroomDetailsData &&
               !chatroomDetailsIsLoading &&
               chatroomName &&
-              chatroomDetailsData[Object.keys(chatroomDetailsData)[0]].map(
-                (data: formattedChatroomMessageType) => (
-                  <ChatroomMessage
-                    key={data.messageId}
-                    text={data.text}
-                    time={convertISOstringToTime(data.updated_at)}
-                    status="sent"
-                    sender={data.userId}
-                    currentLoggedInUser={decodedToken.userId}
-                  />
-                )
-              )}
+              messageToDisplay.map((data: formattedChatroomMessageType) => (
+                <ChatroomMessage
+                  key={data.messageId}
+                  text={data.text}
+                  time={convertISOstringToTime(data.updated_at)}
+                  status="sent"
+                  sender={data.userId}
+                  currentLoggedInUser={decodedToken.userId}
+                />
+              ))}
           </div>
           <div className="flex max-w-full min-h-[62px] px-4 pb-[5px] bg-backgroundDefaultActive">
             <div className="flex items-center w-[88px] h-auto">
@@ -114,10 +180,10 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
                   className="flex w-full  px-3 py-[9px] rounded-[8px] border border-white focus:outline-none"
                   id="messageInputField"
                   type="text"
-                  value={message}
+                  value={messageToSent}
                   onChange={handleMessageInputfieldOnChange}
                   onKeyDown={handleMessageInputfieldOnKeydown}
-                  placeholder={!message ? "Type a message" : ""}
+                  placeholder={!messageToSent ? "Type a message" : ""}
                 />
               </form>
             </div>

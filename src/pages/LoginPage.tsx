@@ -2,6 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
 import { CustomButton } from "../components/CustomButton";
 import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
 import { ErrorModal } from "../components/modals/ErrorModal";
@@ -50,8 +51,11 @@ export const LoginPage = () => {
       }).unwrap();
       if (result) {
         localStorage.setItem("token", result.tokenData.token);
+        initiateWebSocketConnection(result.tokenData.token);
         dispatch(loginSuccess());
         navigate("/", { replace: true });
+      } else {
+        console.error("Login Failed");
       }
     } catch (err) {
       if (err) {
@@ -71,6 +75,30 @@ export const LoginPage = () => {
 
   const handleErrorModalButtonClicked = () => {
     setShowErrorModal(false);
+  };
+
+  const initiateWebSocketConnection = (token: string) => {
+    const socket = io("http://localhost:4000", {
+      query: {
+        token: token,
+      },
+    });
+
+    socket.on("connect", () => {
+      console.log("connected to websocket server");
+    });
+
+    socket.on("send-message", (data) => {
+      console.log("data inside send-message socket: ", data);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("disconnected from websocket server");
+    });
+
+    socket.on("connect_error", (error) => {
+      console.error('Websocket connection error: ", error');
+    });
   };
 
   return (
