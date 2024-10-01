@@ -56,11 +56,13 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
       displayMessage(message);
     });
 
+    socket?.emit("join-room", chatroomId);
+
     return () => {
       socket?.off("send-message", () => {});
       socket?.off("receive-message", () => {});
     };
-  }, [socket]);
+  }, [socket, chatroomId]);
 
   useEffect(() => {
     if (chatroomDetailsData && !chatroomDetailsIsLoading) {
@@ -97,15 +99,19 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
 
         if (messageId) {
           // follows the request type needed in the backend
-          socket?.emit("send-message", {
-            text: messageToSent,
-            status: "sent",
-            updated_at: dayjs(new Date()).toISOString(),
-            username: decodedToken.username,
-            messageId: messageId,
-            userId: decodedToken.userId,
-            chatroomId: chatroomId,
-          });
+          socket?.emit(
+            "send-message",
+            {
+              text: messageToSent,
+              status: "sent",
+              updated_at: dayjs(new Date()).toISOString(),
+              username: decodedToken.username,
+              messageId: messageId,
+              userId: decodedToken.userId,
+              chatroomId: chatroomId,
+            },
+            chatroomId
+          );
           refetchChatroomDetails();
         } else {
           console.error("Failed to send message");
