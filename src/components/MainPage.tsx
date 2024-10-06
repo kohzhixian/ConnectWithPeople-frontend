@@ -1,21 +1,15 @@
 import { useState } from "react";
-import { useAppDispatch } from "../redux/hooks";
+import { WebSocketProvider } from "../hooks/WebSocketProvider";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
-import { ChatroomDataType } from "../types/chatRoomType";
-import { WebSocketProvider } from "../hooks/WebSocketProvider";
 export const MainPage = () => {
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
-  const [selectedChatroom, setSelectedChatroom] = useState<
-    ChatroomDataType | undefined
-  >(undefined);
   const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
     useState<boolean>(false);
   const [chatroomOverlay, setChatroomOverlay] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
   //use effects
 
   //functions
@@ -41,8 +35,6 @@ export const MainPage = () => {
               handleChatIconClicked={handleNewChatIconClicked}
               setSelectedChatroomId={setSelectedChatroomId}
               setChatroomOverlay={setChatroomOverlay}
-              selectedChatroom={selectedChatroom}
-              setSelectedChatroom={setSelectedChatroom}
             />
           )}
           {chatroomOverlay ? (

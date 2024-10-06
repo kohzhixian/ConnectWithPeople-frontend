@@ -92,12 +92,12 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
     if (event.key === "Enter") {
       event.preventDefault();
       try {
-        const messageId = await messageData({
+        const messageResponse = await messageData({
           text: messageToSent,
           chatroom_id: chatroomId,
         }).unwrap();
 
-        if (messageId) {
+        if (messageResponse) {
           // follows the request type needed in the backend
           socket?.emit(
             "send-message",
@@ -106,7 +106,7 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
               status: "sent",
               updated_at: dayjs(new Date()).toISOString(),
               username: decodedToken.username,
-              messageId: messageId,
+              messageId: messageResponse.messageId,
               userId: decodedToken.userId,
               chatroomId: chatroomId,
             },

@@ -4,14 +4,8 @@ import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
-import {
-  useGetAllMessageByChatroomIdQuery,
-  useGetLatestMsgForAllChatroomLinkedToUserQuery,
-} from "../services/message.api";
-import {
-  ChatroomDataType,
-  formattedMessageInterface,
-} from "../types/chatRoomType";
+import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
+import { formattedMessageInterface } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
@@ -25,15 +19,11 @@ export const Sidebar = ({
   handleChatIconClicked,
   setSelectedChatroomId,
   setChatroomOverlay,
-  selectedChatroom,
-  setSelectedChatroom,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   setChatroomOverlay: Dispatch<SetStateAction<boolean>>;
-  selectedChatroom: ChatroomDataType | undefined;
-  setSelectedChatroom: Dispatch<SetStateAction<ChatroomDataType | undefined>>;
 }) => {
   // rtk query
   const {
@@ -41,14 +31,6 @@ export const Sidebar = ({
     error: chatroomError,
     isLoading: chatroomIsLoading,
   } = useGetChatroomsByUserIdQuery(undefined);
-
-  const {
-    data: individualChatroomMessageData,
-    error: individualChatroomMessageError,
-    isLoading: individualChatroomMessageIsLoading,
-  } = useGetAllMessageByChatroomIdQuery(selectedChatroomId, {
-    skip: !selectedChatroomId || selectedChatroomId === "",
-  });
 
   const {
     data: latestMessageData,
@@ -148,6 +130,9 @@ export const Sidebar = ({
             : chatroomData &&
               chatroomData.map((data: ChatroomInterface) => {
                 const { message, sender, date } = renderLatestMessage(data.id);
+                if (!message) {
+                  return null;
+                }
                 return (
                   <ChatRoom
                     key={data.id}
