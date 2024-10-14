@@ -4,12 +4,16 @@ import {
   MessageResponseType,
 } from "../types/rtkQuery/messageApi.type";
 import { baseQueryWithReauth } from "../utilities/rtkQuery.utility";
+import { formattedMessageInterface } from "../types/chatRoomType";
 
 export const messageApi = createApi({
   reducerPath: "message",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    getLatestMsgForAllChatroomLinkedToUser: builder.query({
+    getLatestMsgForAllChatroomLinkedToUser: builder.query<
+      formattedMessageInterface[],
+      null
+    >({
       query: () => "/message/getLatestMsgForAllChatroomLinkedToUser",
     }),
 

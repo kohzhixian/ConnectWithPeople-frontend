@@ -16,7 +16,13 @@ import { Emoticon } from "./Icons/Emoticon";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
 
-export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
+export const ChatRoomOverlay = ({
+  chatroomId,
+  refetchLatestMessage,
+}: {
+  chatroomId: string;
+  refetchLatestMessage: () => void;
+}) => {
   // constants
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
@@ -113,6 +119,7 @@ export const ChatRoomOverlay = ({ chatroomId }: { chatroomId: string }) => {
             chatroomId
           );
           refetchChatroomDetails();
+          refetchLatestMessage();
         } else {
           console.error("Failed to send message");
         }

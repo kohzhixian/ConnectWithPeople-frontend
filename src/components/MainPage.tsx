@@ -4,6 +4,7 @@ import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
+import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
 export const MainPage = () => {
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
@@ -21,6 +22,14 @@ export const MainPage = () => {
   //   dispatch(logout());
   // };
 
+  // rtk Query
+  const {
+    data: latestMessageData,
+    error: latestMessageError,
+    isLoading: latestMessageIsLoading,
+    refetch: refetchLatestMessage,
+  } = useGetLatestMsgForAllChatroomLinkedToUserQuery(null);
+
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -35,11 +44,16 @@ export const MainPage = () => {
               handleChatIconClicked={handleNewChatIconClicked}
               setSelectedChatroomId={setSelectedChatroomId}
               setChatroomOverlay={setChatroomOverlay}
+              latestMessageData={latestMessageData!}
+              latestMessageIsLoading={latestMessageIsLoading}
             />
           )}
           {chatroomOverlay ? (
             <WebSocketProvider>
-              <ChatRoomOverlay chatroomId={selectedChatroomId} />
+              <ChatRoomOverlay
+                chatroomId={selectedChatroomId}
+                refetchLatestMessage={refetchLatestMessage}
+              />
             </WebSocketProvider>
           ) : (
             <NoChatroomOpenedDiv />

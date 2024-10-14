@@ -4,7 +4,6 @@ import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
-import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
 import { formattedMessageInterface } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
 import { ChatRoom } from "./ChatRoom";
@@ -19,11 +18,15 @@ export const Sidebar = ({
   handleChatIconClicked,
   setSelectedChatroomId,
   setChatroomOverlay,
+  latestMessageData,
+  latestMessageIsLoading,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   setChatroomOverlay: Dispatch<SetStateAction<boolean>>;
+  latestMessageData: formattedMessageInterface[];
+  latestMessageIsLoading: boolean;
 }) => {
   // rtk query
   const {
@@ -31,12 +34,6 @@ export const Sidebar = ({
     error: chatroomError,
     isLoading: chatroomIsLoading,
   } = useGetChatroomsByUserIdQuery(undefined);
-
-  const {
-    data: latestMessageData,
-    error: latestMessageError,
-    isLoading: latestMessageIsLoading,
-  } = useGetLatestMsgForAllChatroomLinkedToUserQuery(undefined);
 
   // functions
   const handleEscButtonPressed = (event: KeyboardEvent) => {
@@ -63,7 +60,8 @@ export const Sidebar = ({
   });
   // functions
   const renderLatestMessage = (chatroomId: string) => {
-    let latestMessageDetails: formattedMessageInterface | null = null;
+    let latestMessageDetails: formattedMessageInterface | null | undefined =
+      null;
     if (latestMessageData) {
       latestMessageDetails = latestMessageData.find(
         (data: formattedMessageInterface) => data.chatroom_id === chatroomId
