@@ -6,13 +6,23 @@ export const NewChatOverlayItem = ({
   newChatOverlayItemIcon,
   newChatOverlayItemLabel,
   isContact,
+  handleContactsOnClick,
+  id,
+  isClicked,
 }: {
   newChatOverlayItemIcon: string;
   newChatOverlayItemLabel: string;
   isContact: boolean;
+  handleContactsOnClick?: (phoneNum: string) => void;
+  id?: string;
+  isClicked?: boolean;
 }) => {
   return (
-    <SidebarItemDiv>
+    <SidebarItemDiv
+      id={id}
+      handleClick={handleContactsOnClick}
+      isClicked={isClicked}
+    >
       <Fragment>
         <div className="flex h-cellHeight w-[77px] pl-[13px] pr-[15px] items-center">
           <ChatRoomIcon imageIcon={newChatOverlayItemIcon} />

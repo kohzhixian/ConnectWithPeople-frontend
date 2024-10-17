@@ -11,12 +11,16 @@ import { NewChatOverlayItem } from "./NewChatOverlayItem";
 import { SearchTextfield } from "./SearchTextfield";
 import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
+import { useState } from "react";
 
 export const NewChatOverlay = ({
   setShowNewChatOverlay,
 }: {
   setShowNewChatOverlay: (value: React.SetStateAction<boolean>) => void;
 }) => {
+  // use states
+  const [selectedContact, setSelectedContact] = useState<string>("");
+
   // rtk query
   const {
     data: contactData,
@@ -29,6 +33,10 @@ export const NewChatOverlay = ({
     setShowNewChatOverlay(false);
   };
 
+  const handleContactsOnClick = (phoneNum: string) => {
+    setSelectedContact(phoneNum);
+  };
+
   return (
     <div className="flex flex-CND_ max-w-30% flex-col  h-full">
       <SidebarOverlayHeader handleBackButtonClicked={handleBackButtonClicked} />
@@ -38,6 +46,7 @@ export const NewChatOverlay = ({
         {NewChatOverlayItemConstants.map((data) => (
           <NewChatOverlayItem
             key={data.id}
+            id={data.id}
             newChatOverlayItemIcon={data.newChatOverlayItemIcon}
             newChatOverlayItemLabel={data.newChatOverlayItemLabel}
             isContact={false}
@@ -57,9 +66,15 @@ export const NewChatOverlay = ({
                   (contactDetails: getContactByUserIdResponseType) => (
                     <NewChatOverlayItem
                       key={contactDetails.contact_phone_num}
+                      id={String(contactDetails.contact_phone_num)}
                       newChatOverlayItemIcon={mockImage2}
                       newChatOverlayItemLabel={contactDetails.contact_name}
                       isContact={true}
+                      handleContactsOnClick={handleContactsOnClick}
+                      isClicked={
+                        selectedContact ===
+                        String(contactDetails.contact_phone_num)
+                      }
                     />
                   )
                 )}
