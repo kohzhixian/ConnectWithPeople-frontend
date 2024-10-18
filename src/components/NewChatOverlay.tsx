@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { ContactsIndicator } from "../constants/ContactsIndicator.constants";
 import { NewChatOverlayItemConstants } from "../constants/NewChatOverlayItemConstants.constants";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
@@ -10,16 +12,19 @@ import { ContactSeparatorDiv } from "./ContactsSeparatorDiv";
 import { NewChatOverlayItem } from "./NewChatOverlayItem";
 import { SearchTextfield } from "./SearchTextfield";
 import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
-import mockImage2 from "../assets/images/mock-test-image2.jpg";
-import { useState } from "react";
 
 export const NewChatOverlay = ({
   setShowNewChatOverlay,
+  setShowCreateChatroomOverlay,
+  selectedContact,
+  setSelectedContact,
 }: {
   setShowNewChatOverlay: (value: React.SetStateAction<boolean>) => void;
+  setShowCreateChatroomOverlay: Dispatch<SetStateAction<boolean>>;
+  selectedContact: getContactByUserIdResponseType;
+  setSelectedContact: Dispatch<SetStateAction<getContactByUserIdResponseType>>;
 }) => {
   // use states
-  const [selectedContact, setSelectedContact] = useState<string>("");
 
   // rtk query
   const {
@@ -33,10 +38,14 @@ export const NewChatOverlay = ({
     setShowNewChatOverlay(false);
   };
 
-  const handleContactsOnClick = (phoneNum: string) => {
-    setSelectedContact(phoneNum);
+  const handleContactsOnClick = (contactName: string, phoneNum: number) => {
+    setSelectedContact({
+      contact_name: contactName,
+      contact_phone_num: phoneNum,
+    });
+    setShowCreateChatroomOverlay(true);
+    setShowNewChatOverlay(false);
   };
-
   return (
     <div className="flex flex-CND_ max-w-30% flex-col  h-full">
       <SidebarOverlayHeader handleBackButtonClicked={handleBackButtonClicked} />
@@ -72,9 +81,10 @@ export const NewChatOverlay = ({
                       isContact={true}
                       handleContactsOnClick={handleContactsOnClick}
                       isClicked={
-                        selectedContact ===
-                        String(contactDetails.contact_phone_num)
+                        selectedContact.contact_phone_num ===
+                        contactDetails.contact_phone_num
                       }
+                      selectedContact={contactDetails}
                     />
                   )
                 )}

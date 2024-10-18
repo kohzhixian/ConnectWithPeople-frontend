@@ -1,6 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
-import { SidebarItemDiv } from "./SidebarItemDiv";
+import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomIcon } from "./Icons/ChatRoomIcon";
+import { SidebarItemDiv } from "./SidebarItemDiv";
 
 export const NewChatOverlayItem = ({
   newChatOverlayItemIcon,
@@ -9,18 +10,22 @@ export const NewChatOverlayItem = ({
   handleContactsOnClick,
   id,
   isClicked,
+  selectedContact,
 }: {
   newChatOverlayItemIcon: string;
   newChatOverlayItemLabel: string;
   isContact: boolean;
-  handleContactsOnClick?: (phoneNum: string) => void;
+  handleContactsOnClick?: (contactName: string, phoneNum: number) => void;
   id?: string;
   isClicked?: boolean;
+  selectedContact?: getContactByUserIdResponseType;
 }) => {
   return (
     <SidebarItemDiv
       id={id}
-      handleClick={handleContactsOnClick}
+      handleContactsOnClick={handleContactsOnClick}
+      contactName={selectedContact?.contact_name}
+      phoneNum={selectedContact?.contact_phone_num}
       isClicked={isClicked}
     >
       <Fragment>

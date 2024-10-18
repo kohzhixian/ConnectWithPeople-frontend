@@ -5,12 +5,22 @@ import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
+import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
+import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 export const MainPage = () => {
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
   const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
     useState<boolean>(false);
   const [chatroomOverlay, setChatroomOverlay] = useState<boolean>(false);
+  const [showCreateChatroomOverlay, setShowCreateChatroomOverlay] =
+    useState<boolean>(false);
+  const [selectedContact, setSelectedContact] =
+    useState<getContactByUserIdResponseType>({
+      contact_name: "",
+      contact_phone_num: 0,
+    });
+
   //use effects
 
   //functions
@@ -37,6 +47,9 @@ export const MainPage = () => {
           {showNewChatSidebarOverlay ? (
             <NewChatOverlay
               setShowNewChatOverlay={setShowNewChatSidebarOverlay}
+              setShowCreateChatroomOverlay={setShowCreateChatroomOverlay}
+              selectedContact={selectedContact}
+              setSelectedContact={setSelectedContact}
             />
           ) : (
             <Sidebar
@@ -55,6 +68,8 @@ export const MainPage = () => {
                 refetchLatestMessage={refetchLatestMessage}
               />
             </WebSocketProvider>
+          ) : showCreateChatroomOverlay ? (
+            <CreateChatroomOverlay contactName={selectedContact.contact_name} />
           ) : (
             <NoChatroomOpenedDiv />
           )}
