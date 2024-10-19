@@ -149,7 +149,7 @@ export const ChatRoomOverlay = ({
       {chatroomDetailsIsLoading ? (
         "LOADING..."
       ) : (
-        <div className="flex-1 relative h-full overflow-hidden">
+        <div className="flex flex-col flex-1 relative h-full overflow-hidden">
           <TopPanel>
             <div className="flex flex-row items-center gap-4">
               <TopPanelProfile />
@@ -163,7 +163,7 @@ export const ChatRoomOverlay = ({
               </div>
             </div>
           </TopPanel>
-          <div className="bg-chatroomBackground h-[90%] overflow-auto">
+          <div className="bg-chatroomBackground overflow-auto flex-1">
             {chatroomDetailsData &&
               !chatroomDetailsIsLoading &&
               chatroomName &&
