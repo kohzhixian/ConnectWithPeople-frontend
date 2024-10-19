@@ -8,4 +8,5 @@ export interface ChatroomInterface {
 export interface ChatroomInitialStateInterface {
   showChatroomOverlay: boolean;
   showCreateChatroomOverlay: boolean;
+  showSidebarNewChatOverlay: boolean;
 }

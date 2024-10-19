@@ -7,6 +7,7 @@ import {
 const initialState: ChatroomInitialStateInterface = {
   showChatroomOverlay: false,
   showCreateChatroomOverlay: false,
+  showSidebarNewChatOverlay: false,
 };
 
 export const chatroomSlice = createSlice({
@@ -20,10 +21,17 @@ export const chatroomSlice = createSlice({
     setShowCreateChatroomOverlay: (state, action: PayloadAction<boolean>) => {
       state.showCreateChatroomOverlay = action.payload;
     },
+
+    setShowSidebarNewChatOverlay: (state, action: PayloadAction<boolean>) => {
+      state.showSidebarNewChatOverlay = action.payload;
+    },
   },
 });
 
-export const { setShowChatroomOverlay, setShowCreateChatroomOverlay } =
-  chatroomSlice.actions;
+export const {
+  setShowChatroomOverlay,
+  setShowCreateChatroomOverlay,
+  setShowSidebarNewChatOverlay,
+} = chatroomSlice.actions;
 
 export default chatroomSlice.reducer;

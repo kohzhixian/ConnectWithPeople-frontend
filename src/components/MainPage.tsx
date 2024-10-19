@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { WebSocketProvider } from "../hooks/WebSocketProvider";
-import { useAppSelector } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
 import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
@@ -8,16 +8,17 @@ import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { SidebarNewChat } from "./SidebarNewChat";
+import { setShowSidebarNewChatOverlay } from "../redux/reducers/chatroom.reducer";
 export const MainPage = () => {
   //constants
+  const dispatch = useAppDispatch();
   const chatroomSelector = useAppSelector((state) => state.chatroom);
   const showChatroomOverlay = chatroomSelector.showChatroomOverlay;
   const showCreateChatroomOverlay = chatroomSelector.showCreateChatroomOverlay;
+  const showSidebarNewChatOverlay = chatroomSelector.showSidebarNewChatOverlay;
 
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
-  const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
-    useState<boolean>(false);
   const [selectedContact, setSelectedContact] =
     useState<getContactByUserIdResponseType>({
       contact_name: "",
@@ -28,7 +29,7 @@ export const MainPage = () => {
 
   //functions
   const handleNewChatIconClicked = () => {
-    setShowNewChatSidebarOverlay(true);
+    dispatch(setShowSidebarNewChatOverlay(true));
   };
 
   // const handleLogoutButtonClicked = () => {
@@ -47,9 +48,8 @@ export const MainPage = () => {
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
         <div className="flex w-full h-full overflow-hidden items-center justify-center">
-          {showNewChatSidebarOverlay ? (
+          {showSidebarNewChatOverlay ? (
             <SidebarNewChat
-              setShowNewChatOverlay={setShowNewChatSidebarOverlay}
               selectedContact={selectedContact}
               setSelectedContact={setSelectedContact}
             />

@@ -4,7 +4,10 @@ import { ContactsIndicator } from "../constants/ContactsIndicator.constants";
 import { NewChatOverlayItemConstants } from "../constants/NewChatOverlayItemConstants.constants";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { useAppDispatch } from "../redux/hooks";
-import { setShowCreateChatroomOverlay } from "../redux/reducers/chatroom.reducer";
+import {
+  setShowCreateChatroomOverlay,
+  setShowSidebarNewChatOverlay,
+} from "../redux/reducers/chatroom.reducer";
 import { useGetContactByUserIdQuery } from "../services/contact.api";
 import {
   formattedContact,
@@ -16,11 +19,9 @@ import { SearchTextfield } from "./SearchTextfield";
 import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
 
 export const SidebarNewChat = ({
-  setShowNewChatOverlay,
   selectedContact,
   setSelectedContact,
 }: {
-  setShowNewChatOverlay: (value: React.SetStateAction<boolean>) => void;
   selectedContact: getContactByUserIdResponseType;
   setSelectedContact: Dispatch<SetStateAction<getContactByUserIdResponseType>>;
 }) => {
@@ -36,7 +37,7 @@ export const SidebarNewChat = ({
 
   // functions
   const handleBackButtonClicked = () => {
-    setShowNewChatOverlay(false);
+    dispatch(setShowSidebarNewChatOverlay(false));
   };
 
   const handleContactsOnClick = (contactName: string, phoneNum: number) => {
@@ -45,7 +46,7 @@ export const SidebarNewChat = ({
       contact_phone_num: phoneNum,
     });
     dispatch(setShowCreateChatroomOverlay(true));
-    setShowNewChatOverlay(false);
+    dispatch(setShowSidebarNewChatOverlay(false));
   };
   return (
     <div className="flex flex-CND_ max-w-30% flex-col  h-full">
