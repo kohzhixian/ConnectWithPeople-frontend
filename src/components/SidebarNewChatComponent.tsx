@@ -3,7 +3,7 @@ import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.typ
 import { ChatRoomIcon } from "./Icons/ChatRoomIcon";
 import { SidebarItemDiv } from "./SidebarItemDiv";
 
-export const NewChatOverlayItem = ({
+export const SidebarNewChatComponent = ({
   newChatOverlayItemIcon,
   newChatOverlayItemLabel,
   isContact,

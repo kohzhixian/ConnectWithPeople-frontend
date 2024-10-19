@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { WebSocketProvider } from "../hooks/WebSocketProvider";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useAppSelector } from "../redux/hooks";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
 import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
-import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
+import { SidebarNewChat } from "./SidebarNewChat";
 export const MainPage = () => {
   //constants
   const chatroomSelector = useAppSelector((state) => state.chatroom);
@@ -48,7 +48,7 @@ export const MainPage = () => {
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
         <div className="flex w-full h-full overflow-hidden items-center justify-center">
           {showNewChatSidebarOverlay ? (
-            <NewChatOverlay
+            <SidebarNewChat
               setShowNewChatOverlay={setShowNewChatSidebarOverlay}
               selectedContact={selectedContact}
               setSelectedContact={setSelectedContact}

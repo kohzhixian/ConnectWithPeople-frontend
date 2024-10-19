@@ -11,11 +11,11 @@ import {
   getContactByUserIdResponseType,
 } from "../types/rtkQuery/contactApi.type";
 import { ContactSeparatorDiv } from "./ContactsSeparatorDiv";
-import { NewChatOverlayItem } from "./NewChatOverlayItem";
+import { SidebarNewChatComponent } from "./SidebarNewChatComponent";
 import { SearchTextfield } from "./SearchTextfield";
 import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
 
-export const NewChatOverlay = ({
+export const SidebarNewChat = ({
   setShowNewChatOverlay,
   selectedContact,
   setSelectedContact,
@@ -54,7 +54,7 @@ export const NewChatOverlay = ({
 
       <div className="flex-1 w-full overflow-y-scroll overflow-x-hidden">
         {NewChatOverlayItemConstants.map((data) => (
-          <NewChatOverlayItem
+          <SidebarNewChatComponent
             key={data.id}
             id={data.id}
             newChatOverlayItemIcon={data.newChatOverlayItemIcon}
@@ -74,7 +74,7 @@ export const NewChatOverlay = ({
                 <ContactSeparatorDiv key={data.key} label={data.key} />
                 {data.contact.map(
                   (contactDetails: getContactByUserIdResponseType) => (
-                    <NewChatOverlayItem
+                    <SidebarNewChatComponent
                       key={contactDetails.contact_phone_num}
                       id={String(contactDetails.contact_phone_num)}
                       newChatOverlayItemIcon={mockImage2}
