@@ -1,8 +1,10 @@
 import dayjs from "dayjs";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
+import { useAppDispatch } from "../redux/hooks";
+import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import { formattedMessageInterface } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
@@ -12,8 +14,6 @@ import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
-import { useAppDispatch } from "../redux/hooks";
-import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 
 export const Sidebar = ({
   selectedChatroomId,
@@ -39,28 +39,12 @@ export const Sidebar = ({
   } = useGetChatroomsByUserIdQuery(undefined);
 
   // functions
-  const handleEscButtonPressed = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      setSelectedChatroomId("");
-      dispatch(setShowChatroomOverlay(false));
-    }
-  };
 
   const handleChatRoomClick = (id: string) => {
     setSelectedChatroomId(id);
     dispatch(setShowChatroomOverlay(true));
   };
 
-  // use effect
-  useEffect(() => {
-    // Add Event listner when the component mounts
-    document.addEventListener("keydown", handleEscButtonPressed);
-
-    // Cleanup event listener when the component unmounts
-    return () => {
-      document.removeEventListener("keydown", handleEscButtonPressed);
-    };
-  });
   // functions
   const renderLatestMessage = (chatroomId: string) => {
     let latestMessageDetails: formattedMessageInterface | null | undefined =

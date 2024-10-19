@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WebSocketProvider } from "../hooks/WebSocketProvider";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
@@ -8,7 +8,11 @@ import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { SidebarNewChat } from "./SidebarNewChat";
-import { setShowSidebarNewChatOverlay } from "../redux/reducers/chatroom.reducer";
+import {
+  setShowChatroomOverlay,
+  setShowCreateChatroomOverlay,
+  setShowSidebarNewChatOverlay,
+} from "../redux/reducers/chatroom.reducer";
 export const MainPage = () => {
   //constants
   const dispatch = useAppDispatch();
@@ -26,10 +30,28 @@ export const MainPage = () => {
     });
 
   //use effects
+  useEffect(() => {
+    // Add Event listner when the component mounts
+    document.addEventListener("keydown", handleEscButtonPressed);
+
+    // Cleanup event listener when the component unmounts
+    return () => {
+      document.removeEventListener("keydown", handleEscButtonPressed);
+    };
+  });
 
   //functions
   const handleNewChatIconClicked = () => {
     dispatch(setShowSidebarNewChatOverlay(true));
+  };
+
+  const handleEscButtonPressed = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      setSelectedChatroomId("");
+      dispatch(setShowChatroomOverlay(false));
+      dispatch(setShowCreateChatroomOverlay(false));
+      dispatch(setShowSidebarNewChatOverlay(false));
+    }
   };
 
   // const handleLogoutButtonClicked = () => {
@@ -50,6 +72,7 @@ export const MainPage = () => {
         <div className="flex w-full h-full overflow-hidden items-center justify-center">
           {showSidebarNewChatOverlay ? (
             <SidebarNewChat
+              key={1}
               selectedContact={selectedContact}
               setSelectedContact={setSelectedContact}
             />
