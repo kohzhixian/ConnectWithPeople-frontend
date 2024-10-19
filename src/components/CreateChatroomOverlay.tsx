@@ -36,7 +36,6 @@ export const CreateChatroomOverlay = ({
   ) => {
     setMessageToSent(event.target.value);
   };
-  console.log("contact name: ", contactName);
   const handleMessageInputfieldOnKeydown = (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => {

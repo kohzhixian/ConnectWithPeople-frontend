@@ -5,15 +5,25 @@ import {
 } from "../../types/reducer/chatroom.type";
 
 const initialState: ChatroomInitialStateInterface = {
-  chatrooms: [],
+  showChatroomOverlay: false,
+  showCreateChatroomOverlay: false,
 };
 
 export const chatroomSlice = createSlice({
   name: "chatroom",
   initialState,
   reducers: {
-    setChatroom: (state, action: PayloadAction<ChatroomInterface[]>) => {
-      state.chatrooms = action.payload;
+    setShowChatroomOverlay: (state, action: PayloadAction<boolean>) => {
+      state.showChatroomOverlay = action.payload;
+    },
+
+    setShowCreateChatroomOverlay: (state, action: PayloadAction<boolean>) => {
+      state.showCreateChatroomOverlay = action.payload;
     },
   },
 });
+
+export const { setShowChatroomOverlay, setShowCreateChatroomOverlay } =
+  chatroomSlice.actions;
+
+export default chatroomSlice.reducer;

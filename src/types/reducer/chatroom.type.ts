@@ -6,5 +6,6 @@ export interface ChatroomInterface {
 }
 
 export interface ChatroomInitialStateInterface {
-  chatrooms: ChatroomInterface[];
+  showChatroomOverlay: boolean;
+  showCreateChatroomOverlay: boolean;
 }

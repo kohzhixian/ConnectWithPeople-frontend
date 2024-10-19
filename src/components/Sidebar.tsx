@@ -12,22 +12,25 @@ import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
+import { useAppDispatch } from "../redux/hooks";
+import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 
 export const Sidebar = ({
   selectedChatroomId,
   handleChatIconClicked,
   setSelectedChatroomId,
-  setChatroomOverlay,
   latestMessageData,
   latestMessageIsLoading,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
-  setChatroomOverlay: Dispatch<SetStateAction<boolean>>;
   latestMessageData: formattedMessageInterface[];
   latestMessageIsLoading: boolean;
 }) => {
+  //constants
+  const dispatch = useAppDispatch();
+
   // rtk query
   const {
     data: chatroomData,
@@ -39,13 +42,13 @@ export const Sidebar = ({
   const handleEscButtonPressed = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setSelectedChatroomId("");
-      setChatroomOverlay(false);
+      dispatch(setShowChatroomOverlay(false));
     }
   };
 
   const handleChatRoomClick = (id: string) => {
     setSelectedChatroomId(id);
-    setChatroomOverlay(true);
+    dispatch(setShowChatroomOverlay(true));
   };
 
   // use effect

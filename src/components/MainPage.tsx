@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { WebSocketProvider } from "../hooks/WebSocketProvider";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
+import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
+import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
 import { NewChatOverlay } from "./NewChatOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
-import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
-import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
-import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 export const MainPage = () => {
+  //constants
+  const chatroomSelector = useAppSelector((state) => state.chatroom);
+  const showChatroomOverlay = chatroomSelector.showChatroomOverlay;
+  const showCreateChatroomOverlay = chatroomSelector.showCreateChatroomOverlay;
+
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
   const [showNewChatSidebarOverlay, setShowNewChatSidebarOverlay] =
-    useState<boolean>(false);
-  const [chatroomOverlay, setChatroomOverlay] = useState<boolean>(false);
-  const [showCreateChatroomOverlay, setShowCreateChatroomOverlay] =
     useState<boolean>(false);
   const [selectedContact, setSelectedContact] =
     useState<getContactByUserIdResponseType>({
@@ -47,7 +50,6 @@ export const MainPage = () => {
           {showNewChatSidebarOverlay ? (
             <NewChatOverlay
               setShowNewChatOverlay={setShowNewChatSidebarOverlay}
-              setShowCreateChatroomOverlay={setShowCreateChatroomOverlay}
               selectedContact={selectedContact}
               setSelectedContact={setSelectedContact}
             />
@@ -56,12 +58,11 @@ export const MainPage = () => {
               selectedChatroomId={selectedChatroomId}
               handleChatIconClicked={handleNewChatIconClicked}
               setSelectedChatroomId={setSelectedChatroomId}
-              setChatroomOverlay={setChatroomOverlay}
               latestMessageData={latestMessageData!}
               latestMessageIsLoading={latestMessageIsLoading}
             />
           )}
-          {chatroomOverlay ? (
+          {showChatroomOverlay ? (
             <WebSocketProvider>
               <ChatRoomOverlay
                 chatroomId={selectedChatroomId}

@@ -4,10 +4,12 @@ import { authenticationSlice } from "./reducers/authentication.reducer";
 import { contactApi } from "../services/contact.api";
 import { chatroomApi } from "../services/chatroom.api";
 import messageApi from "../services/message.api";
+import { chatroomSlice } from "./reducers/chatroom.reducer";
 
 export const store = configureStore({
   reducer: {
     authentication: authenticationSlice.reducer,
+    chatroom: chatroomSlice.reducer,
     [authenticationApi.reducerPath]: authenticationApi.reducer,
     [contactApi.reducerPath]: contactApi.reducer,
     [chatroomApi.reducerPath]: chatroomApi.reducer,

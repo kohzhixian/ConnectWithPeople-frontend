@@ -3,6 +3,8 @@ import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { ContactsIndicator } from "../constants/ContactsIndicator.constants";
 import { NewChatOverlayItemConstants } from "../constants/NewChatOverlayItemConstants.constants";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
+import { useAppDispatch } from "../redux/hooks";
+import { setShowCreateChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 import { useGetContactByUserIdQuery } from "../services/contact.api";
 import {
   formattedContact,
@@ -15,16 +17,15 @@ import { SidebarOverlayHeader } from "./SidebarOverlayHeader";
 
 export const NewChatOverlay = ({
   setShowNewChatOverlay,
-  setShowCreateChatroomOverlay,
   selectedContact,
   setSelectedContact,
 }: {
   setShowNewChatOverlay: (value: React.SetStateAction<boolean>) => void;
-  setShowCreateChatroomOverlay: Dispatch<SetStateAction<boolean>>;
   selectedContact: getContactByUserIdResponseType;
   setSelectedContact: Dispatch<SetStateAction<getContactByUserIdResponseType>>;
 }) => {
-  // use states
+  //constants
+  const dispatch = useAppDispatch();
 
   // rtk query
   const {
@@ -43,7 +44,7 @@ export const NewChatOverlay = ({
       contact_name: contactName,
       contact_phone_num: phoneNum,
     });
-    setShowCreateChatroomOverlay(true);
+    dispatch(setShowCreateChatroomOverlay(true));
     setShowNewChatOverlay(false);
   };
   return (
