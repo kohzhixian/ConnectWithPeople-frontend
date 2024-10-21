@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { WebSocketProvider } from "../hooks/WebSocketProvider";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
-import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
-import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
-import { ChatRoomOverlay } from "./ChatRoomOverlay";
-import { CreateChatroomOverlay } from "./CreateChatroomOverlay";
-import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
-import { Sidebar } from "./Sidebar";
-import { SidebarNewChat } from "./SidebarNewChat";
 import {
   setShowChatroomOverlay,
   setShowCreateChatroomOverlay,
   setShowSidebarNewChatOverlay,
 } from "../redux/reducers/chatroom.reducer";
+import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
+import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
+import { ChatRoomOverlay } from "./ChatRoomOverlay";
+import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
+import { Sidebar } from "./Sidebar";
+import { SidebarNewChat } from "./SidebarNewChat";
 export const MainPage = () => {
   //constants
   const dispatch = useAppDispatch();
@@ -85,15 +84,15 @@ export const MainPage = () => {
               latestMessageIsLoading={latestMessageIsLoading}
             />
           )}
-          {showChatroomOverlay ? (
+          {showChatroomOverlay || showCreateChatroomOverlay ? (
             <WebSocketProvider>
               <ChatRoomOverlay
                 chatroomId={selectedChatroomId}
                 refetchLatestMessage={refetchLatestMessage}
+                newChatroomName={selectedContact.contact_name}
+                isCreate={showCreateChatroomOverlay}
               />
             </WebSocketProvider>
-          ) : showCreateChatroomOverlay ? (
-            <CreateChatroomOverlay contactName={selectedContact.contact_name} />
           ) : (
             <NoChatroomOpenedDiv />
           )}

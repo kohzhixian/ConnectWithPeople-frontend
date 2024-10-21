@@ -1,10 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { formattedMessageInterface } from "../types/chatRoomType";
 import {
   createMessageRequestType,
-  MessageResponseType,
+  createMessageResponseType,
 } from "../types/rtkQuery/messageApi.type";
 import { baseQueryWithReauth } from "../utilities/rtkQuery.utility";
-import { formattedMessageInterface } from "../types/chatRoomType";
 
 export const messageApi = createApi({
   reducerPath: "message",
@@ -18,7 +18,7 @@ export const messageApi = createApi({
     }),
 
     createMessage: builder.mutation<
-      MessageResponseType,
+      createMessageResponseType,
       createMessageRequestType
     >({
       query: (messageDetails) => ({

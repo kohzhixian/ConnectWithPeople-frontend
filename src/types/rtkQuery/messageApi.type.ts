@@ -3,7 +3,7 @@ export interface createMessageRequestType {
   chatroom_id: string;
 }
 
-export interface MessageResponseType {
+export interface createMessageResponseType {
   message: string;
   messageId: string;
 }

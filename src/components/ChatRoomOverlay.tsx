@@ -19,10 +19,15 @@ import { TopPanelProfile } from "./TopPanelProfile";
 export const ChatRoomOverlay = ({
   chatroomId,
   refetchLatestMessage,
+  newChatroomName,
+  isCreate,
 }: {
   chatroomId: string;
   refetchLatestMessage: () => void;
+  newChatroomName: string;
+  isCreate: boolean;
 }) => {
+  console.log("chatroom id: ", chatroomId);
   // constants
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
@@ -155,7 +160,9 @@ export const ChatRoomOverlay = ({
               <TopPanelProfile />
               <div className="flex flex-col">
                 <span className="text-base text-primaryStrong">
-                  {Object.keys(chatroomDetailsData)[0]}
+                  {!isCreate
+                    ? Object.keys(chatroomDetailsData)[0]
+                    : newChatroomName}
                 </span>
                 <span className="text-xs text-secondary">
                   Click here for group Info
