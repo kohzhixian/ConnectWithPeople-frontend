@@ -1,6 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "../utilities/rtkQuery.utility";
-import { CreateChatroomRequestType } from "../types/rtkQuery/chatroomApi.type";
+import {
+  CreateChatroomRequestType,
+  CreateChatroomResponseType,
+} from "../types/rtkQuery/chatroomApi.type";
 
 export const chatroomApi = createApi({
   reducerPath: "chatroomApi",
@@ -17,7 +20,10 @@ export const chatroomApi = createApi({
       }),
     }),
 
-    createChatroom: builder.mutation<string, CreateChatroomRequestType>({
+    createChatroom: builder.mutation<
+      CreateChatroomResponseType,
+      CreateChatroomRequestType
+    >({
       query: (chatroomDetails) => ({
         url: "/chatroom/createChatroom",
         body: chatroomDetails,

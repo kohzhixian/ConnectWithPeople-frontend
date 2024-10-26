@@ -6,9 +6,12 @@ import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
 import { useAppDispatch } from "../redux/hooks";
 import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
-import { formattedMessageInterface } from "../types/chatRoomType";
+import {
+  ChatroomDataType,
+  formattedMessageInterface,
+} from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
-import { ChatRoom } from "./ChatRoom";
+import { ChatRoom } from "./SidebarChatRoom";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
 import { SearchTextfield } from "./SearchTextfield";
 import { TabButton } from "./TabButton";
@@ -21,22 +24,19 @@ export const Sidebar = ({
   setSelectedChatroomId,
   latestMessageData,
   latestMessageIsLoading,
+  sidebarChatroomData,
+  sidebarChatroomDataIsLoading,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   latestMessageData: formattedMessageInterface[];
   latestMessageIsLoading: boolean;
+  sidebarChatroomData: ChatroomDataType[];
+  sidebarChatroomDataIsLoading: boolean;
 }) => {
   //constants
   const dispatch = useAppDispatch();
-
-  // rtk query
-  const {
-    data: chatroomData,
-    error: chatroomError,
-    isLoading: chatroomIsLoading,
-  } = useGetChatroomsByUserIdQuery(undefined);
 
   // functions
 
@@ -110,10 +110,10 @@ export const Sidebar = ({
           />
         </div>
         <div className="w-full h-full overflow-y-scroll">
-          {chatroomIsLoading || latestMessageIsLoading
+          {sidebarChatroomDataIsLoading || latestMessageIsLoading
             ? "LOADING..."
-            : chatroomData &&
-              chatroomData.map((data: ChatroomInterface) => {
+            : sidebarChatroomData &&
+              sidebarChatroomData.map((data: ChatroomInterface) => {
                 const { message, sender, date } = renderLatestMessage(data.id);
                 if (!message) {
                   return null;

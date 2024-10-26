@@ -3,13 +3,17 @@ import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useWebSocket } from "../hooks/WebSocketProvider";
-import { useGetChatroomDetailsByIdQuery } from "../services/chatroom.api";
+import {
+  useCreateChatroomMutation,
+  useGetChatroomDetailsByIdQuery,
+} from "../services/chatroom.api";
 import { useCreateMessageMutation } from "../services/message.api";
 import {
   createMessageSocketType,
   formattedChatroomMessageType,
 } from "../types/chatRoomType";
 import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
+import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatroomMessage } from "./chatroomMessage";
 import { AttachIcon } from "./Icons/AttachIcon";
 import { Emoticon } from "./Icons/Emoticon";
@@ -19,15 +23,16 @@ import { TopPanelProfile } from "./TopPanelProfile";
 export const ChatRoomOverlay = ({
   chatroomId,
   refetchLatestMessage,
-  newChatroomName,
+  selectedContact,
   isCreate,
+  refetchSidebarChatroomData,
 }: {
   chatroomId: string;
   refetchLatestMessage: () => void;
-  newChatroomName: string;
+  selectedContact: getContactByUserIdResponseType;
   isCreate: boolean;
+  refetchSidebarChatroomData: () => void;
 }) => {
-  console.log("chatroom id: ", chatroomId);
   // constants
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
@@ -39,7 +44,6 @@ export const ChatRoomOverlay = ({
   const [messageToDisplay, setMessageToDisplay] = useState<
     formattedChatroomMessageType[]
   >([]);
-
   // rtk query
   const {
     data: chatroomDetailsData,
@@ -52,10 +56,12 @@ export const ChatRoomOverlay = ({
 
   const [messageData, { isLoading: isPosting }] = useCreateMessageMutation();
 
+  const [createChatroomData, { isLoading: isCreating }] =
+    useCreateChatroomMutation();
+
   const chatroomName = chatroomDetailsData
     ? Object.keys(chatroomDetailsData)[0]
     : null;
-
   // use effects
   useEffect(() => {
     //listens for new message from the websocket server
@@ -102,34 +108,77 @@ export const ChatRoomOverlay = ({
   ) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      try {
-        const messageResponse = await messageData({
-          text: messageToSent,
-          chatroom_id: chatroomId,
-        }).unwrap();
-
-        if (messageResponse) {
-          // follows the request type needed in the backend
-          socket?.emit(
-            "send-message",
-            {
-              text: messageToSent,
-              status: "sent",
-              updated_at: dayjs(new Date()).toISOString(),
-              username: decodedToken.username,
-              messageId: messageResponse.messageId,
-              userId: decodedToken.userId,
-              chatroomId: chatroomId,
-            },
-            chatroomId
+      if (isCreate) {
+        try {
+          const userPhoneNumArray: number[] = [];
+          userPhoneNumArray.push(
+            selectedContact.contact_phone_num,
+            decodedToken.phone_number
           );
-          refetchChatroomDetails();
+
+          const response = await createChatroomData({
+            chatroom_name: selectedContact.contact_name,
+            chatroom_icon: "chatroom icon",
+            userPhoneNum: userPhoneNumArray,
+          }).unwrap();
+
+          if (response) {
+            const messageResponse = await messageData({
+              text: messageToSent,
+              chatroom_id: response.chatroomId,
+            }).unwrap();
+            if (messageResponse) {
+              socket?.emit(
+                "send-message",
+                {
+                  text: messageToSent,
+                  status: "sent",
+                  updated_at: dayjs(new Date()).toISOString(),
+                  username: decodedToken.username,
+                  messageId: messageResponse.messageId,
+                  userId: decodedToken.userId,
+                  chatroomId: chatroomId,
+                },
+                chatroomId
+              );
+            }
+          }
+          setMessageToSent("");
+          refetchSidebarChatroomData();
           refetchLatestMessage();
-        } else {
-          console.error("Failed to send message");
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
+      } else {
+        try {
+          const messageResponse = await messageData({
+            text: messageToSent,
+            chatroom_id: chatroomId,
+          }).unwrap();
+
+          if (messageResponse) {
+            // follows the request type needed in the backend
+            socket?.emit(
+              "send-message",
+              {
+                text: messageToSent,
+                status: "sent",
+                updated_at: dayjs(new Date()).toISOString(),
+                username: decodedToken.username,
+                messageId: messageResponse.messageId,
+                userId: decodedToken.userId,
+                chatroomId: chatroomId,
+              },
+              chatroomId
+            );
+            refetchChatroomDetails();
+            refetchLatestMessage();
+          } else {
+            console.error("Failed to send message");
+          }
+        } catch (err) {
+          console.error(err);
+        }
       }
       setMessageToSent("");
     }
@@ -162,7 +211,7 @@ export const ChatRoomOverlay = ({
                 <span className="text-base text-primaryStrong">
                   {!isCreate
                     ? Object.keys(chatroomDetailsData)[0]
-                    : newChatroomName}
+                    : selectedContact.contact_name}
                 </span>
                 <span className="text-xs text-secondary">
                   Click here for group Info

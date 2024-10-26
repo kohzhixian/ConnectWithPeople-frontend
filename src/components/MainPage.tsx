@@ -12,6 +12,7 @@ import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { SidebarNewChat } from "./SidebarNewChat";
+import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 export const MainPage = () => {
   //constants
   const dispatch = useAppDispatch();
@@ -65,6 +66,13 @@ export const MainPage = () => {
     refetch: refetchLatestMessage,
   } = useGetLatestMsgForAllChatroomLinkedToUserQuery(null);
 
+  const {
+    data: sidebarChatroomData,
+    error: chatroomError,
+    isLoading: sidebarChatroomDataIsLoading,
+    refetch: refetchSidebarChatroomData,
+  } = useGetChatroomsByUserIdQuery(undefined);
+
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -82,6 +90,8 @@ export const MainPage = () => {
               setSelectedChatroomId={setSelectedChatroomId}
               latestMessageData={latestMessageData!}
               latestMessageIsLoading={latestMessageIsLoading}
+              sidebarChatroomData={sidebarChatroomData}
+              sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
             />
           )}
           {showChatroomOverlay || showCreateChatroomOverlay ? (
@@ -89,8 +99,9 @@ export const MainPage = () => {
               <ChatRoomOverlay
                 chatroomId={selectedChatroomId}
                 refetchLatestMessage={refetchLatestMessage}
-                newChatroomName={selectedContact.contact_name}
+                selectedContact={selectedContact}
                 isCreate={showCreateChatroomOverlay}
+                refetchSidebarChatroomData={refetchSidebarChatroomData}
               />
             </WebSocketProvider>
           ) : (
