@@ -1,19 +1,22 @@
 import dayjs from "dayjs";
-import { Dispatch, SetStateAction } from "react";
+import { jwtDecode } from "jwt-decode";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
+import { useWebSocket } from "../hooks/WebSocketProvider";
 import { useAppDispatch } from "../redux/hooks";
 import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
-import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import {
   ChatroomDataType,
   formattedMessageInterface,
 } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
-import { ChatRoom } from "./SidebarChatRoom";
+import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
+import { CreateChatroomRequestType } from "../types/rtkQuery/chatroomApi.type";
 import { TopPanelIcons } from "./Icons/TopPanelIcons";
 import { SearchTextfield } from "./SearchTextfield";
+import { ChatRoom } from "./SidebarChatRoom";
 import { TabButton } from "./TabButton";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
@@ -26,6 +29,7 @@ export const Sidebar = ({
   latestMessageIsLoading,
   sidebarChatroomData,
   sidebarChatroomDataIsLoading,
+  refetchSidebarChatroomData,
 }: {
   selectedChatroomId: string;
   handleChatIconClicked: () => void;
@@ -34,18 +38,41 @@ export const Sidebar = ({
   latestMessageIsLoading: boolean;
   sidebarChatroomData: ChatroomDataType[];
   sidebarChatroomDataIsLoading: boolean;
+  refetchSidebarChatroomData: () => void;
 }) => {
   //constants
   const dispatch = useAppDispatch();
+  const { socket } = useWebSocket();
+  const token = localStorage.getItem("token");
+  const decodedToken = jwtDecode<TokenDataType>(String(token));
+
+  // use effects
+  useEffect(() => {
+    socket?.on("new-chatroom", (chatroomData: CreateChatroomRequestType) => {
+      if (chatroomData.userPhoneNum.includes(decodedToken.phone_number)) {
+        refetchSidebarChatroomData();
+      }
+    });
+
+    socket?.emit("join-room", selectedChatroomId);
+
+    return () => {
+      socket?.off("new-chatroom");
+    };
+  }, [
+    socket,
+    decodedToken.phone_number,
+    refetchSidebarChatroomData,
+    sidebarChatroomData,
+    selectedChatroomId,
+  ]);
 
   // functions
-
   const handleChatRoomClick = (id: string) => {
     setSelectedChatroomId(id);
     dispatch(setShowChatroomOverlay(true));
   };
 
-  // functions
   const renderLatestMessage = (chatroomId: string) => {
     let latestMessageDetails: formattedMessageInterface | null | undefined =
       null;
@@ -115,9 +142,9 @@ export const Sidebar = ({
             : sidebarChatroomData &&
               sidebarChatroomData.map((data: ChatroomInterface) => {
                 const { message, sender, date } = renderLatestMessage(data.id);
-                if (!message) {
-                  return null;
-                }
+                // if (!message) {
+                //   return null;
+                // }
                 return (
                   <ChatRoom
                     key={data.id}

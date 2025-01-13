@@ -34,7 +34,6 @@ export const SidebarNewChat = ({
     error: contactError,
     isLoading: isContactApiLoading,
   } = useGetContactByUserIdQuery(undefined);
-
   // functions
   const handleBackButtonClicked = () => {
     dispatch(setShowSidebarNewChatOverlay(false));

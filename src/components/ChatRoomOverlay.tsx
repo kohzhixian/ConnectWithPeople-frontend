@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useWebSocket } from "../hooks/WebSocketProvider";
 import {
@@ -21,13 +21,15 @@ import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
 
 export const ChatRoomOverlay = ({
-  chatroomId,
+  selectedChatroomId,
+  setSelectedChatroomId,
   refetchLatestMessage,
   selectedContact,
   isCreate,
   refetchSidebarChatroomData,
 }: {
-  chatroomId: string;
+  selectedChatroomId: string;
+  setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   refetchLatestMessage: () => void;
   selectedContact: getContactByUserIdResponseType;
   isCreate: boolean;
@@ -50,8 +52,8 @@ export const ChatRoomOverlay = ({
     error: chatroomDetailsError,
     isLoading: chatroomDetailsIsLoading,
     refetch: refetchChatroomDetails,
-  } = useGetChatroomDetailsByIdQuery(chatroomId, {
-    skip: !chatroomId || chatroomId === "",
+  } = useGetChatroomDetailsByIdQuery(selectedChatroomId || "", {
+    skip: !selectedChatroomId,
   });
 
   const [messageData, { isLoading: isPosting }] = useCreateMessageMutation();
@@ -73,13 +75,13 @@ export const ChatRoomOverlay = ({
       displayMessage(message);
     });
 
-    socket?.emit("join-room", chatroomId);
+    socket?.emit("join-room", selectedChatroomId);
 
     return () => {
       socket?.off("send-message", () => {});
       socket?.off("receive-message", () => {});
     };
-  }, [socket, chatroomId]);
+  }, [socket, selectedChatroomId]);
 
   useEffect(() => {
     if (chatroomDetailsData && !chatroomDetailsIsLoading) {
@@ -123,6 +125,16 @@ export const ChatRoomOverlay = ({
           }).unwrap();
 
           if (response) {
+            socket?.emit(
+              "new-chatroom",
+              {
+                chatroom_name: selectedContact.contact_name,
+                chatroom_icon: "chatroom icon",
+                userPhoneNum: userPhoneNumArray,
+              },
+              selectedChatroomId
+            );
+
             const messageResponse = await messageData({
               text: messageToSent,
               chatroom_id: response.chatroomId,
@@ -137,12 +149,13 @@ export const ChatRoomOverlay = ({
                   username: decodedToken.username,
                   messageId: messageResponse.messageId,
                   userId: decodedToken.userId,
-                  chatroomId: chatroomId,
+                  chatroomId: selectedChatroomId,
                 },
-                chatroomId
+                selectedChatroomId
               );
             }
           }
+          setSelectedChatroomId(response.chatroomId);
           setMessageToSent("");
           refetchSidebarChatroomData();
           refetchLatestMessage();
@@ -153,7 +166,7 @@ export const ChatRoomOverlay = ({
         try {
           const messageResponse = await messageData({
             text: messageToSent,
-            chatroom_id: chatroomId,
+            chatroom_id: selectedChatroomId,
           }).unwrap();
 
           if (messageResponse) {
@@ -167,9 +180,9 @@ export const ChatRoomOverlay = ({
                 username: decodedToken.username,
                 messageId: messageResponse.messageId,
                 userId: decodedToken.userId,
-                chatroomId: chatroomId,
+                chatroomId: selectedChatroomId,
               },
-              chatroomId
+              selectedChatroomId
             );
             refetchChatroomDetails();
             refetchLatestMessage();

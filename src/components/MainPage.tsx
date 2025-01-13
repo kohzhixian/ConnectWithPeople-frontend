@@ -79,25 +79,28 @@ export const MainPage = () => {
         <div className="flex w-full h-full overflow-hidden items-center justify-center">
           {showSidebarNewChatOverlay ? (
             <SidebarNewChat
-              key={1}
               selectedContact={selectedContact}
               setSelectedContact={setSelectedContact}
             />
           ) : (
-            <Sidebar
-              selectedChatroomId={selectedChatroomId}
-              handleChatIconClicked={handleNewChatIconClicked}
-              setSelectedChatroomId={setSelectedChatroomId}
-              latestMessageData={latestMessageData!}
-              latestMessageIsLoading={latestMessageIsLoading}
-              sidebarChatroomData={sidebarChatroomData}
-              sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
-            />
+            <WebSocketProvider>
+              <Sidebar
+                selectedChatroomId={selectedChatroomId}
+                handleChatIconClicked={handleNewChatIconClicked}
+                setSelectedChatroomId={setSelectedChatroomId}
+                latestMessageData={latestMessageData!}
+                latestMessageIsLoading={latestMessageIsLoading}
+                sidebarChatroomData={sidebarChatroomData}
+                sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
+                refetchSidebarChatroomData={refetchSidebarChatroomData}
+              />
+            </WebSocketProvider>
           )}
           {showChatroomOverlay || showCreateChatroomOverlay ? (
             <WebSocketProvider>
               <ChatRoomOverlay
-                chatroomId={selectedChatroomId}
+                selectedChatroomId={selectedChatroomId}
+                setSelectedChatroomId={setSelectedChatroomId}
                 refetchLatestMessage={refetchLatestMessage}
                 selectedContact={selectedContact}
                 isCreate={showCreateChatroomOverlay}
