@@ -19,6 +19,11 @@ import { AttachIcon } from "./Icons/AttachIcon";
 import { Emoticon } from "./Icons/Emoticon";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
+import { useAppDispatch } from "../redux/hooks";
+import {
+  setShowChatroomOverlay,
+  setShowCreateChatroomOverlay,
+} from "../redux/reducers/chatroom.reducer";
 
 export const ChatRoomOverlay = ({
   selectedChatroomId,
@@ -38,7 +43,7 @@ export const ChatRoomOverlay = ({
   // constants
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
-
+  const dispatch = useAppDispatch();
   const { socket } = useWebSocket();
 
   // use states
@@ -92,6 +97,14 @@ export const ChatRoomOverlay = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatroomDetailsData]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (selectedChatroomId) {
+      refetchSidebarChatroomData();
+      refetchChatroomDetails();
+    }
+  }, [selectedChatroomId]);
 
   // functions
   const convertISOstringToTime = (ISOstring: string) => {
@@ -155,6 +168,8 @@ export const ChatRoomOverlay = ({
               );
             }
           }
+          dispatch(setShowCreateChatroomOverlay(false));
+          dispatch(setShowChatroomOverlay(true));
           setSelectedChatroomId(response.chatroomId);
           setMessageToSent("");
           refetchSidebarChatroomData();
