@@ -1,3 +1,4 @@
+import { jwtDecode } from "jwt-decode";
 import {
   createContext,
   ReactNode,
@@ -6,6 +7,7 @@ import {
   useState,
 } from "react";
 import { io, Socket } from "socket.io-client";
+import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
 
 interface WebSocketContextType {
   socket: Socket | null;
@@ -22,6 +24,15 @@ export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
       query: {
         token: tokenData,
       },
+    });
+
+    socketInstance.on("connect", () => {
+      if (tokenData) {
+        const decoded = jwtDecode<TokenDataType>(tokenData);
+        if (decoded && decoded.phone_number) {
+          socketInstance.emit("register-phone", decoded.phone_number);
+        }
+      }
     });
 
     setSocket(socketInstance);

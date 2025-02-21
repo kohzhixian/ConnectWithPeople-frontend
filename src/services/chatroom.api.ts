@@ -30,12 +30,20 @@ export const chatroomApi = createApi({
         method: "POST",
       }),
     }),
+
+    getUsersInChatroom: builder.query({
+      query: (chatroomId: string) => ({
+        url: "/chatroom/get-users-in-chatroom",
+        params: { chatroomId: chatroomId },
+      }),
+    }),
   }),
 });
 export const {
   useGetChatroomsByUserIdQuery,
   useGetChatroomDetailsByIdQuery,
   useCreateChatroomMutation,
+  useLazyGetUsersInChatroomQuery,
 } = chatroomApi;
 
 export default chatroomApi;

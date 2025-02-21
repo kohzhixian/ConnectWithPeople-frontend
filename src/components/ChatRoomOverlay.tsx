@@ -3,9 +3,15 @@ import { jwtDecode } from "jwt-decode";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useWebSocket } from "../hooks/WebSocketProvider";
+import { useAppDispatch } from "../redux/hooks";
+import {
+  setShowChatroomOverlay,
+  setShowCreateChatroomOverlay,
+} from "../redux/reducers/chatroom.reducer";
 import {
   useCreateChatroomMutation,
   useGetChatroomDetailsByIdQuery,
+  useLazyGetUsersInChatroomQuery,
 } from "../services/chatroom.api";
 import { useCreateMessageMutation } from "../services/message.api";
 import {
@@ -13,17 +19,13 @@ import {
   formattedChatroomMessageType,
 } from "../types/chatRoomType";
 import { TokenDataType } from "../types/rtkQuery/authenticationApi.type";
+import { GetUsersInChatroomResponse } from "../types/rtkQuery/chatroomApi.type";
 import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatroomMessage } from "./chatroomMessage";
 import { AttachIcon } from "./Icons/AttachIcon";
 import { Emoticon } from "./Icons/Emoticon";
 import { TopPanel } from "./TopPanel";
 import { TopPanelProfile } from "./TopPanelProfile";
-import { useAppDispatch } from "../redux/hooks";
-import {
-  setShowChatroomOverlay,
-  setShowCreateChatroomOverlay,
-} from "../redux/reducers/chatroom.reducer";
 
 export const ChatRoomOverlay = ({
   selectedChatroomId,
@@ -66,6 +68,11 @@ export const ChatRoomOverlay = ({
   const [createChatroomData, { isLoading: isCreating }] =
     useCreateChatroomMutation();
 
+  const [
+    getUsersInChatroomTrigger,
+    { data: chatroomUsers, isLoading: isGetUsersInChatroomLoading },
+  ] = useLazyGetUsersInChatroomQuery();
+
   const chatroomName = chatroomDetailsData
     ? Object.keys(chatroomDetailsData)[0]
     : null;
@@ -80,8 +87,6 @@ export const ChatRoomOverlay = ({
       displayMessage(message);
     });
 
-    socket?.emit("join-room", selectedChatroomId);
-
     return () => {
       socket?.off("send-message", () => {});
       socket?.off("receive-message", () => {});
@@ -95,10 +100,7 @@ export const ChatRoomOverlay = ({
 
       setMessageToDisplay(formattedChatroomMessage);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatroomDetailsData]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (selectedChatroomId) {
       refetchSidebarChatroomData();
@@ -145,7 +147,7 @@ export const ChatRoomOverlay = ({
                 chatroom_icon: "chatroom icon",
                 userPhoneNum: userPhoneNumArray,
               },
-              selectedChatroomId
+              response.chatroomId
             );
 
             const messageResponse = await messageData({
@@ -164,7 +166,7 @@ export const ChatRoomOverlay = ({
                   userId: decodedToken.userId,
                   chatroomId: selectedChatroomId,
                 },
-                selectedChatroomId
+                userPhoneNumArray
               );
             }
           }
@@ -172,8 +174,8 @@ export const ChatRoomOverlay = ({
           dispatch(setShowChatroomOverlay(true));
           setSelectedChatroomId(response.chatroomId);
           setMessageToSent("");
-          refetchSidebarChatroomData();
-          refetchLatestMessage();
+          await refetchSidebarChatroomData();
+          await refetchLatestMessage();
         } catch (err) {
           console.error(err);
         }
@@ -183,6 +185,11 @@ export const ChatRoomOverlay = ({
             text: messageToSent,
             chatroom_id: selectedChatroomId,
           }).unwrap();
+
+          const response = await getUsersInChatroomTrigger(selectedChatroomId);
+          const userPhoneNumArray = response.data.map(
+            (data: GetUsersInChatroomResponse) => data.phoneNum
+          );
 
           if (messageResponse) {
             // follows the request type needed in the backend
@@ -197,7 +204,7 @@ export const ChatRoomOverlay = ({
                 userId: decodedToken.userId,
                 chatroomId: selectedChatroomId,
               },
-              selectedChatroomId
+              userPhoneNumArray
             );
             refetchChatroomDetails();
             refetchLatestMessage();

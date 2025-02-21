@@ -72,7 +72,10 @@ export const MainPage = () => {
     isLoading: sidebarChatroomDataIsLoading,
     refetch: refetchSidebarChatroomData,
   } = useGetChatroomsByUserIdQuery(undefined);
-
+  useEffect(() => {
+    refetchLatestMessage();
+    refetchSidebarChatroomData();
+  }, [sidebarChatroomData]);
   return (
     <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
       <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
@@ -83,30 +86,27 @@ export const MainPage = () => {
               setSelectedContact={setSelectedContact}
             />
           ) : (
-            <WebSocketProvider>
-              <Sidebar
-                selectedChatroomId={selectedChatroomId}
-                handleChatIconClicked={handleNewChatIconClicked}
-                setSelectedChatroomId={setSelectedChatroomId}
-                latestMessageData={latestMessageData!}
-                latestMessageIsLoading={latestMessageIsLoading}
-                sidebarChatroomData={sidebarChatroomData}
-                sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
-                refetchSidebarChatroomData={refetchSidebarChatroomData}
-              />
-            </WebSocketProvider>
+            <Sidebar
+              selectedChatroomId={selectedChatroomId}
+              handleChatIconClicked={handleNewChatIconClicked}
+              setSelectedChatroomId={setSelectedChatroomId}
+              latestMessageData={latestMessageData!}
+              refetchLatestMessage={refetchLatestMessage}
+              latestMessageIsLoading={latestMessageIsLoading}
+              sidebarChatroomData={sidebarChatroomData}
+              sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
+              refetchSidebarChatroomData={refetchSidebarChatroomData}
+            />
           )}
           {showChatroomOverlay || showCreateChatroomOverlay ? (
-            <WebSocketProvider>
-              <ChatRoomOverlay
-                selectedChatroomId={selectedChatroomId}
-                setSelectedChatroomId={setSelectedChatroomId}
-                refetchLatestMessage={refetchLatestMessage}
-                selectedContact={selectedContact}
-                isCreate={showCreateChatroomOverlay}
-                refetchSidebarChatroomData={refetchSidebarChatroomData}
-              />
-            </WebSocketProvider>
+            <ChatRoomOverlay
+              selectedChatroomId={selectedChatroomId}
+              setSelectedChatroomId={setSelectedChatroomId}
+              refetchLatestMessage={refetchLatestMessage}
+              selectedContact={selectedContact}
+              isCreate={showCreateChatroomOverlay}
+              refetchSidebarChatroomData={refetchSidebarChatroomData}
+            />
           ) : (
             <NoChatroomOpenedDiv />
           )}

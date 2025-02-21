@@ -26,6 +26,7 @@ export const Sidebar = ({
   handleChatIconClicked,
   setSelectedChatroomId,
   latestMessageData,
+  refetchLatestMessage,
   latestMessageIsLoading,
   sidebarChatroomData,
   sidebarChatroomDataIsLoading,
@@ -35,6 +36,7 @@ export const Sidebar = ({
   handleChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   latestMessageData: formattedMessageInterface[];
+  refetchLatestMessage: () => void;
   latestMessageIsLoading: boolean;
   sidebarChatroomData: ChatroomDataType[];
   sidebarChatroomDataIsLoading: boolean;
@@ -51,10 +53,9 @@ export const Sidebar = ({
     socket?.on("new-chatroom", (chatroomData: CreateChatroomRequestType) => {
       if (chatroomData.userPhoneNum.includes(decodedToken.phone_number)) {
         refetchSidebarChatroomData();
+        refetchLatestMessage();
       }
     });
-
-    socket?.emit("join-room", selectedChatroomId);
 
     return () => {
       socket?.off("new-chatroom");
@@ -64,6 +65,7 @@ export const Sidebar = ({
     decodedToken.phone_number,
     refetchSidebarChatroomData,
     sidebarChatroomData,
+    latestMessageData,
     selectedChatroomId,
   ]);
 

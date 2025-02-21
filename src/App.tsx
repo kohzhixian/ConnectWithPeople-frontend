@@ -5,6 +5,7 @@ import { MainPage } from "./components/MainPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { useAppSelector } from "./redux/hooks";
+import { WebSocketProvider } from "./hooks/WebSocketProvider";
 
 function App() {
   // state
@@ -20,7 +21,9 @@ function App() {
           element={
             <ProtectedRoute isValidUser={isAuthenticated} invalidRoute="/login">
               <MainBackground>
-                <MainPage />
+                <WebSocketProvider>
+                  <MainPage />
+                </WebSocketProvider>
               </MainBackground>
             </ProtectedRoute>
           }
