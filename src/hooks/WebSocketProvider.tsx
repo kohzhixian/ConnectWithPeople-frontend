@@ -14,12 +14,13 @@ interface WebSocketContextType {
 }
 
 const WebSocketContext = createContext<WebSocketContextType>({ socket: null });
-const tokenData = localStorage.getItem("token");
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
+    const tokenData = localStorage.getItem("token");
+
     const socketInstance = io("http://localhost:4000", {
       query: {
         token: tokenData,
