@@ -139,6 +139,11 @@ export const ChatRoomOverlay = ({
             userPhoneNum: userPhoneNumArray,
           }).unwrap();
 
+          const messageResponse = await messageData({
+            text: messageToSent,
+            chatroom_id: response.chatroomId,
+          }).unwrap();
+
           if (response) {
             socket?.emit(
               "new-chatroom",
@@ -150,10 +155,6 @@ export const ChatRoomOverlay = ({
               response.chatroomId
             );
 
-            const messageResponse = await messageData({
-              text: messageToSent,
-              chatroom_id: response.chatroomId,
-            }).unwrap();
             if (messageResponse) {
               socket?.emit(
                 "send-message",

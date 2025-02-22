@@ -47,7 +47,6 @@ export const Sidebar = ({
   const { socket } = useWebSocket();
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
-
   // use effects
   useEffect(() => {
     socket?.on("new-chatroom", (chatroomData: CreateChatroomRequestType) => {
@@ -78,7 +77,7 @@ export const Sidebar = ({
   const renderLatestMessage = (chatroomId: string) => {
     let latestMessageDetails: formattedMessageInterface | null | undefined =
       null;
-    if (latestMessageData) {
+    if (latestMessageData.length !== 0) {
       latestMessageDetails = latestMessageData.find(
         (data: formattedMessageInterface) => data.chatroom_id === chatroomId
       );
