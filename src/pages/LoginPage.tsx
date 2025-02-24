@@ -51,7 +51,6 @@ export const LoginPage = () => {
       }).unwrap();
       if (result) {
         localStorage.setItem("token", result.tokenData.token);
-        initiateWebSocketConnection(result.tokenData.token);
         dispatch(loginSuccess());
         navigate("/", { replace: true });
       } else {
@@ -75,30 +74,6 @@ export const LoginPage = () => {
 
   const handleErrorModalButtonClicked = () => {
     setShowErrorModal(false);
-  };
-
-  const initiateWebSocketConnection = (token: string) => {
-    const socket = io("http://localhost:4000", {
-      query: {
-        token: token,
-      },
-    });
-
-    socket.on("connect", () => {
-      console.log("connected to websocket server");
-    });
-
-    socket.on("send-message", (data) => {
-      console.log("data inside send-message socket: ", data);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("disconnected from websocket server");
-    });
-
-    socket.on("connect_error", (error) => {
-      console.error('Websocket connection error: ", error');
-    });
   };
 
   return (

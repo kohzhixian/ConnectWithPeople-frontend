@@ -76,20 +76,24 @@ export const ChatRoomOverlay = ({
   const chatroomName = chatroomDetailsData
     ? Object.keys(chatroomDetailsData)[0]
     : null;
+
+  const handleSendMessage = (message: createMessageSocketType) => {
+    displayMessage(message);
+  };
+
+  const handleReceiveMessage = (message: createMessageSocketType) => {
+    displayMessage(message);
+  };
   // use effects
   useEffect(() => {
     //listens for new message from the websocket server
-    socket?.on("send-message", (newMessage) => {
-      displayMessage(newMessage);
-    });
+    socket?.on("send-message", handleSendMessage);
 
-    socket?.on("receive-message", (message) => {
-      displayMessage(message);
-    });
+    socket?.on("receive-message", handleReceiveMessage);
 
     return () => {
-      socket?.off("send-message", () => {});
-      socket?.off("receive-message", () => {});
+      socket?.off("send-message", handleSendMessage);
+      socket?.off("receive-message", handleReceiveMessage);
     };
   }, [socket, selectedChatroomId]);
 
@@ -221,6 +225,8 @@ export const ChatRoomOverlay = ({
   };
 
   const displayMessage = (newMessage: createMessageSocketType) => {
+    console.log("new message: ", newMessage);
+
     const result = {
       text: newMessage.text,
       status: newMessage.status,
