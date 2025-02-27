@@ -88,7 +88,7 @@ export const MainPage = () => {
           ) : (
             <Sidebar
               selectedChatroomId={selectedChatroomId}
-              handleChatIconClicked={handleNewChatIconClicked}
+              handleNewChatIconClicked={handleNewChatIconClicked}
               setSelectedChatroomId={setSelectedChatroomId}
               latestMessageData={latestMessageData!}
               refetchLatestMessage={refetchLatestMessage}

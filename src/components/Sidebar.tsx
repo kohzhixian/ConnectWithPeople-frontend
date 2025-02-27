@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import mockImage2 from "../assets/images/mock-test-image2.jpg";
 import { SearchTextfieldPlaceholders } from "../constants/SearchTextfieldPlaceholders.constants";
 import { TabButtonLabel } from "../constants/TabButtonLabel.constants";
@@ -23,7 +23,7 @@ import { TopPanelProfile } from "./TopPanelProfile";
 
 export const Sidebar = ({
   selectedChatroomId,
-  handleChatIconClicked,
+  handleNewChatIconClicked,
   setSelectedChatroomId,
   latestMessageData,
   refetchLatestMessage,
@@ -33,7 +33,7 @@ export const Sidebar = ({
   refetchSidebarChatroomData,
 }: {
   selectedChatroomId: string;
-  handleChatIconClicked: () => void;
+  handleNewChatIconClicked: () => void;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
   latestMessageData: formattedMessageInterface[];
   refetchLatestMessage: () => void;
@@ -47,6 +47,11 @@ export const Sidebar = ({
   const { socket } = useWebSocket();
   const token = localStorage.getItem("token");
   const decodedToken = jwtDecode<TokenDataType>(String(token));
+
+  // use states
+  const [showDropDownMenuOptions, setShowDropDownMenuOptions] =
+    useState<boolean>(false);
+
   // use effects
   useEffect(() => {
     socket?.on("new-chatroom", (chatroomData: CreateChatroomRequestType) => {
@@ -72,6 +77,10 @@ export const Sidebar = ({
   const handleChatRoomClick = (id: string) => {
     setSelectedChatroomId(id);
     dispatch(setShowChatroomOverlay(true));
+  };
+
+  const handleDropDownMenuClicked = () => {
+    setShowDropDownMenuOptions((prev) => !prev);
   };
 
   const renderLatestMessage = (chatroomId: string) => {
@@ -118,7 +127,12 @@ export const Sidebar = ({
       <TopPanel>
         <>
           <TopPanelProfile />
-          <TopPanelIcons handleChatIconClicked={handleChatIconClicked} />
+          <TopPanelIcons
+            handleNewChatIconClicked={handleNewChatIconClicked}
+            handleDropDownMenuClicked={handleDropDownMenuClicked}
+            showDropDownMenuOptions={showDropDownMenuOptions}
+            setShowDropDownMenuOptions={setShowDropDownMenuOptions}
+          />
         </>
       </TopPanel>
       <div className="h-full">

@@ -1,12 +1,12 @@
 export const NewChatIcon = ({
-  handleChatIconClicked,
+  handleNewChatIconClicked,
 }: {
-  handleChatIconClicked: () => void;
+  handleNewChatIconClicked: () => void;
 }) => {
   return (
     <div
       className="icon-div ml-2.5 relative flex h-full w-10  px-2 py-2 cursor-pointer"
-      onClick={handleChatIconClicked}
+      onClick={handleNewChatIconClicked}
     >
       <svg
         viewBox="0 0 24 24"
