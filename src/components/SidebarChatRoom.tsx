@@ -42,7 +42,8 @@ export const ChatRoom = ({
           </div>
           <div className="flex flex-row min-h-[20px] text-[14px] text-secondaryStronger truncate font-normal w-[399px] m-t-[2px]">
             <div className="inline-flex w-auto">{sender}</div>
-            <span>:&nbsp;</span>
+            {lastestMessageSentInChatroom &&
+              lastestMessageSentInChatroom.length > 0 && <span>:&nbsp;</span>}
             <span className="truncate w-auto">
               {lastestMessageSentInChatroom}
             </span>

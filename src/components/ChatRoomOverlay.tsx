@@ -83,6 +83,8 @@ export const ChatRoomOverlay = ({
 
   const handleReceiveMessage = (message: createMessageSocketType) => {
     displayMessage(message);
+    refetchChatroomDetails();
+    refetchLatestMessage();
   };
   // use effects
   useEffect(() => {
