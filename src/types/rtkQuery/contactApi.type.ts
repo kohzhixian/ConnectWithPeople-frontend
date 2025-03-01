@@ -1,5 +1,10 @@
-export interface ContactRequestBodyType {
-  phone_num: string;
+export interface AddContactReqBodyType {
+  phone_num: number;
+}
+
+export interface AddContactDtoType {
+  addContactReqBody: AddContactReqBodyType;
+  userId: string;
 }
 
 export type getContactByUserIdResponseType = {

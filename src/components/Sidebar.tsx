@@ -52,6 +52,9 @@ export const Sidebar = ({
   const [showDropDownMenuOptions, setShowDropDownMenuOptions] =
     useState<boolean>(false);
 
+  const [showAddContactModal, setShowAddContactModal] =
+    useState<boolean>(false);
+
   // use effects
   useEffect(() => {
     socket?.on("new-chatroom", (chatroomData: CreateChatroomRequestType) => {
@@ -132,6 +135,8 @@ export const Sidebar = ({
             handleDropDownMenuClicked={handleDropDownMenuClicked}
             showDropDownMenuOptions={showDropDownMenuOptions}
             setShowDropDownMenuOptions={setShowDropDownMenuOptions}
+            showAddContactModal={showAddContactModal}
+            setShowAddContactModal={setShowAddContactModal}
           />
         </>
       </TopPanel>
@@ -157,9 +162,6 @@ export const Sidebar = ({
             : sidebarChatroomData &&
               sidebarChatroomData.map((data: ChatroomInterface) => {
                 const { message, sender, date } = renderLatestMessage(data.id);
-                // if (!message) {
-                //   return null;
-                // }
                 return (
                   <ChatRoom
                     key={data.id}

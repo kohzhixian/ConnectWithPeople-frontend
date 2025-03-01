@@ -2,9 +2,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
 import { CustomButton } from "../components/CustomButton";
-import { LoginPageInputField } from "../components/LoginPage/LoginPageInputField";
+import { InputField } from "../components/LoginPage/InputField";
 import { ErrorModal } from "../components/modals/ErrorModal";
 import { LoginPageConstants } from "../constants/LoginPage.constants";
 import { useAppDispatch } from "../redux/hooks";
@@ -91,7 +90,7 @@ export const LoginPage = () => {
             autoComplete="off"
           >
             <div className="flex flex-col items-center justify-center gap-2 ">
-              <LoginPageInputField
+              <InputField
                 label="Username:"
                 placeholder="username"
                 register={register}
@@ -100,7 +99,7 @@ export const LoginPage = () => {
                 errors={errors}
                 onChange={() => clearErrors("username")}
               />
-              <LoginPageInputField
+              <InputField
                 label="Password:"
                 placeholder="password"
                 register={register}

@@ -1,20 +1,21 @@
-import { UseFormClearErrors, UseFormRegister } from "react-hook-form";
+import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 import { CustomInputFieldInputType } from "../types/components/customInputField.type";
-import { LoginInputs } from "../types/reducer/authentication.type";
 
-export const CustomInputField = ({
+interface CustomInputFieldProps<T extends FieldValues> {
+  placeholder: string;
+  inputType: CustomInputFieldInputType;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  onChange: () => void;
+}
+
+export const CustomInputField = <T extends FieldValues>({
   placeholder,
   inputType,
   name,
   register,
   onChange,
-}: {
-  placeholder: string;
-  inputType: CustomInputFieldInputType;
-  name: keyof LoginInputs;
-  register: UseFormRegister<LoginInputs>;
-  onChange: () => void;
-}) => {
+}: CustomInputFieldProps<T>) => {
   return (
     <input
       type={inputType}

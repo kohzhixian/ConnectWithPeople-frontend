@@ -38,14 +38,14 @@ function App() {
         />
         <Route path="/404" element={<div>UNAUTHORIZED PAGE</div>} />
         {/* <Route path="/test" element={<div>test page</div>} /> */}
-        <Route
+        {/* <Route
           path="/test"
           element={
             <ProtectedRoute isValidUser={isAuthenticated} invalidRoute="/login">
               <div>TEST PAGE</div>
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>

@@ -1,9 +1,8 @@
-import { FieldErrors, UseFormRegister, UseFormTrigger } from "react-hook-form";
-import { LoginInputs } from "../../types/reducer/authentication.type";
-import { CustomInputField } from "../CustomInputField";
+import { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 import { CustomInputFieldInputType } from "../../types/components/customInputField.type";
+import { CustomInputField } from "../CustomInputField";
 
-export const LoginPageInputField = ({
+export const InputField = <T extends Record<string, unknown>>({
   label,
   placeholder,
   inputType,
@@ -15,11 +14,13 @@ export const LoginPageInputField = ({
   label: string;
   placeholder: string;
   inputType: CustomInputFieldInputType;
-  name: keyof LoginInputs;
-  register: UseFormRegister<LoginInputs>;
-  errors: FieldErrors<LoginInputs>;
+  name: Path<T>;
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
   onChange: () => void;
 }) => {
+  const error = errors[name];
+  const errorText = typeof error?.message === "string" ? error.message : "";
   return (
     <div>
       <div className="flex flex-row items-center justify-center gap-1">
@@ -32,9 +33,7 @@ export const LoginPageInputField = ({
           onChange={onChange}
         />
       </div>
-      {errors[name] && (
-        <p className="text-xs text-red-500">{errors[name]?.message}</p>
-      )}
+      {errorText && <p className="text-xs text-red-500">{errorText}</p>}
     </div>
   );
 };

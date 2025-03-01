@@ -1,15 +1,12 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { AddContactReqBodyType } from "../types/rtkQuery/contactApi.type";
 import { baseQueryWithReauth } from "../utilities/rtkQuery.utility";
-import {
-  ContactRequestBodyType,
-  formattedContact,
-} from "../types/rtkQuery/contactApi.type";
 
 export const contactApi = createApi({
   reducerPath: "contactApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    addContact: builder.mutation<ContactRequestBodyType, formattedContact[]>({
+    addContact: builder.mutation<string, AddContactReqBodyType>({
       query: (addContactDetails) => ({
         url: "/contact/addContact",
         body: addContactDetails,

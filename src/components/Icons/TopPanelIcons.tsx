@@ -10,11 +10,15 @@ export const TopPanelIcons = ({
   handleDropDownMenuClicked,
   showDropDownMenuOptions,
   setShowDropDownMenuOptions,
+  showAddContactModal,
+  setShowAddContactModal,
 }: {
   handleNewChatIconClicked: () => void;
   handleDropDownMenuClicked: () => void;
   showDropDownMenuOptions: boolean;
   setShowDropDownMenuOptions: Dispatch<SetStateAction<boolean>>;
+  showAddContactModal: boolean;
+  setShowAddContactModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   return (
     <div className="chat-navigation-top-panel-right-div flex h-10 items-center ">
@@ -26,6 +30,8 @@ export const TopPanelIcons = ({
         handleDropDownMenuClicked={handleDropDownMenuClicked}
         showDropDownMenuOptions={showDropDownMenuOptions}
         setShowDropDownMenuOptions={setShowDropDownMenuOptions}
+        showAddContactModal={showAddContactModal}
+        setShowAddContactModal={setShowAddContactModal}
       />
     </div>
   );

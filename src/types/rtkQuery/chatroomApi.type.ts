@@ -16,7 +16,7 @@ export interface ChatroomDataInterface {
   username: string;
   messageId: string;
   userId: string;
-  phoneNumber: number;
+  phone_num: number;
 }
 
 export interface ChatroomDetailsMappingObj {

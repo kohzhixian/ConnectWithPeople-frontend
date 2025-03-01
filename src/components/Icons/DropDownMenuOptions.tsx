@@ -2,8 +2,10 @@ import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 export const DropDownMenuOptions = ({
   setShowDropDownMenuOptions,
+  setShowAddContactModal,
 }: {
   setShowDropDownMenuOptions: Dispatch<SetStateAction<boolean>>;
+  setShowAddContactModal: Dispatch<SetStateAction<boolean>>;
 }) => {
   const dropDownMenuOptionRef = useRef<HTMLDivElement>(null);
 
@@ -38,6 +40,7 @@ export const DropDownMenuOptions = ({
             className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
             onClick={() => {
               setShowDropDownMenuOptions(false);
+              setShowAddContactModal(true);
             }}
           >
             Add Contacts

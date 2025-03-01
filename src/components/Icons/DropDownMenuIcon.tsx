@@ -1,15 +1,86 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Dispatch, SetStateAction, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ContactConstants } from "../../constants/Contact.constants";
+import { addContactSchema } from "../../schemas/addContactSchema";
+import { AddContactInputs } from "../../types/reducer/contact.type";
+import { CustomButton } from "../CustomButton";
+import { InputField } from "../LoginPage/InputField";
+import { ErrorModal } from "../modals/ErrorModal";
 import { DropDownMenuOptions } from "./DropDownMenuOptions";
+import { useAddContactMutation } from "../../services/contact.api";
 
 export const DropDownMenuIcon = ({
   handleDropDownMenuClicked,
   showDropDownMenuOptions,
   setShowDropDownMenuOptions,
+  showAddContactModal,
+  setShowAddContactModal,
 }: {
   handleDropDownMenuClicked: () => void;
   showDropDownMenuOptions: boolean;
   setShowDropDownMenuOptions: Dispatch<SetStateAction<boolean>>;
+  showAddContactModal: boolean;
+  setShowAddContactModal: Dispatch<SetStateAction<boolean>>;
 }) => {
+  interface AddContactErrorMessage {
+    status: number;
+    data: { ErrorMessage: string };
+  }
+
+  // use states
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<AddContactErrorMessage | undefined>(
+    undefined
+  );
+
+  // react hook form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    clearErrors,
+    reset,
+  } = useForm<AddContactInputs>({
+    resolver: yupResolver(addContactSchema),
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
+
+  // rtk query
+  const [contactData, { isLoading: isAdding }] = useAddContactMutation();
+
+  // functions
+  const handleErrorModalButtonClicked = () => {
+    setShowErrorModal(false);
+  };
+
+  const handleCancelButtonClicked = () => {
+    setShowAddContactModal(false);
+  };
+
+  const addContactFormOnSubmit: SubmitHandler<AddContactInputs> = async (
+    data
+  ) => {
+    try {
+      const response = await contactData({
+        phone_num: data.phone_num,
+      }).unwrap();
+
+      if (response) {
+        setShowAddContactModal(false);
+        reset();
+      }
+
+      setShowAddContactModal(false);
+    } catch (err) {
+      if (err) {
+        setErrorMsg(err as AddContactErrorMessage);
+        setShowErrorModal(true);
+      }
+    }
+  };
+
   return (
     <>
       <div
@@ -36,7 +107,61 @@ export const DropDownMenuIcon = ({
       {showDropDownMenuOptions && (
         <DropDownMenuOptions
           setShowDropDownMenuOptions={setShowDropDownMenuOptions}
+          setShowAddContactModal={setShowAddContactModal}
         />
+      )}
+
+      {showAddContactModal && (
+        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-lg w-11/12 max-w-2xl h-auto min-h-[300px]">
+            <div className="h-fit bg-teal-500 p-4 flex items-center justify-center">
+              <h1 className="text-3xl font-bold text-white">Add Contacts</h1>
+            </div>
+            <form
+              className="flex flex-1 items-center justify-center bg-gray-50 h-full py-2"
+              onSubmit={handleSubmit(addContactFormOnSubmit)}
+              autoComplete="off"
+            >
+              <div className="flex flex-col items-center justify-center gap-2 ">
+                <InputField
+                  label="Phone Number:"
+                  placeholder="phone number"
+                  register={register}
+                  name="phone_num"
+                  inputType="number"
+                  errors={errors}
+                  onChange={() => clearErrors("phone_num")}
+                />
+                <div className="flex justify-end w-full gap-3">
+                  <CustomButton
+                    buttonLabel="Add"
+                    buttonColor="bg-blue-500"
+                    hoverColor="bg-blue-600"
+                    buttonType="submit"
+                  />
+                  <CustomButton
+                    buttonLabel="Cancel"
+                    buttonColor="bg-teal-500"
+                    hoverColor="bg-teal-600"
+                    handleButtonClicked={handleCancelButtonClicked}
+                    buttonType="button"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          {showErrorModal && (
+            <ErrorModal
+              errorMsg={
+                ContactConstants.AddContactForm.ADD_CONTACT_FAILED_MSG +
+                errorMsg?.data?.ErrorMessage
+                  ? errorMsg?.data.ErrorMessage
+                  : ""
+              }
+              handleButtonClicked={handleErrorModalButtonClicked}
+            />
+          )}
+        </div>
       )}
     </>
   );
