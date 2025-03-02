@@ -4,3 +4,8 @@ export interface MiscInitialStateInterface {
   showErrorSnackbar: boolean;
   errorMessage: string;
 }
+
+export interface ErrorMessageInterface {
+  status: number;
+  data: { ErrorMessage: string };
+}

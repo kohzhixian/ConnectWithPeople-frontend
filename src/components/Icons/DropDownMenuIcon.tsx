@@ -11,14 +11,10 @@ import {
 import { addContactSchema } from "../../schemas/addContactSchema";
 import { useAddContactMutation } from "../../services/contact.api";
 import { AddContactInputs } from "../../types/reducer/contact.type";
+import { ErrorMessageInterface } from "../../types/reducer/misc.type";
 import { CustomButton } from "../CustomButton";
 import { InputField } from "../LoginPage/InputField";
 import { DropDownMenuOptions } from "./DropDownMenuOptions";
-
-interface AddContactErrorMessage {
-  status: number;
-  data: { ErrorMessage: string };
-}
 
 export const DropDownMenuIcon = ({
   handleDropDownMenuClicked,
@@ -77,7 +73,7 @@ export const DropDownMenuIcon = ({
     } catch (err) {
       if (err) {
         dispatch(
-          setErrorMessage((err as AddContactErrorMessage).data.ErrorMessage)
+          setErrorMessage((err as ErrorMessageInterface).data.ErrorMessage)
         );
         dispatch(setShowErrorSnackbar(true));
       }
