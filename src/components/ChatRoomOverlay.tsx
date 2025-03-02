@@ -227,8 +227,6 @@ export const ChatRoomOverlay = ({
   };
 
   const displayMessage = (newMessage: createMessageSocketType) => {
-    console.log("new message: ", newMessage);
-
     const result = {
       text: newMessage.text,
       status: newMessage.status,

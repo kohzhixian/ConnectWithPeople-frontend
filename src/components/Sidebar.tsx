@@ -9,6 +9,7 @@ import { useAppDispatch } from "../redux/hooks";
 import { setShowChatroomOverlay } from "../redux/reducers/chatroom.reducer";
 import {
   ChatroomDataType,
+  createMessageSocketType,
   formattedMessageInterface,
 } from "../types/chatRoomType";
 import { ChatroomInterface } from "../types/reducer/chatroom.type";
@@ -85,6 +86,19 @@ export const Sidebar = ({
   const handleDropDownMenuClicked = () => {
     setShowDropDownMenuOptions((prev) => !prev);
   };
+
+  const handleReceiveMessage = () => {
+    refetchLatestMessage();
+  };
+
+  // refetch latest message data when chatroom is not opened for user receiving message
+  useEffect(() => {
+    socket?.on("receive-message", handleReceiveMessage);
+
+    return () => {
+      socket?.off("receive-message", handleReceiveMessage);
+    };
+  }, [socket]);
 
   const renderLatestMessage = (chatroomId: string) => {
     let latestMessageDetails: formattedMessageInterface | null | undefined =
