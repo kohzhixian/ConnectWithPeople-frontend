@@ -16,3 +16,7 @@ export interface formattedContact {
   key: string;
   contact: getContactByUserIdResponseType[];
 }
+
+export interface AddContactResponseType {
+  message: string;
+}

@@ -1,8 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  ChatroomInitialStateInterface,
-  ChatroomInterface,
-} from "../../types/reducer/chatroom.type";
+import { ChatroomInitialStateInterface } from "../../types/reducer/chatroom.type";
 
 const initialState: ChatroomInitialStateInterface = {
   showChatroomOverlay: false,

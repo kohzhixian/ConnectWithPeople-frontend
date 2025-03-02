@@ -1,14 +1,24 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ContactConstants } from "../../constants/Contact.constants";
+import { useAppDispatch } from "../../redux/hooks";
+import {
+  setErrorMessage,
+  setShowErrorSnackbar,
+  setShowSuccessSnackbar,
+  setSuccessMessage,
+} from "../../redux/reducers/misc.reducer";
 import { addContactSchema } from "../../schemas/addContactSchema";
+import { useAddContactMutation } from "../../services/contact.api";
 import { AddContactInputs } from "../../types/reducer/contact.type";
 import { CustomButton } from "../CustomButton";
 import { InputField } from "../LoginPage/InputField";
-import { ErrorModal } from "../modals/ErrorModal";
 import { DropDownMenuOptions } from "./DropDownMenuOptions";
-import { useAddContactMutation } from "../../services/contact.api";
+
+interface AddContactErrorMessage {
+  status: number;
+  data: { ErrorMessage: string };
+}
 
 export const DropDownMenuIcon = ({
   handleDropDownMenuClicked,
@@ -23,16 +33,8 @@ export const DropDownMenuIcon = ({
   showAddContactModal: boolean;
   setShowAddContactModal: Dispatch<SetStateAction<boolean>>;
 }) => {
-  interface AddContactErrorMessage {
-    status: number;
-    data: { ErrorMessage: string };
-  }
-
-  // use states
-  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<AddContactErrorMessage | undefined>(
-    undefined
-  );
+  // constants
+  const dispatch = useAppDispatch();
 
   // react hook form
   const {
@@ -51,12 +53,9 @@ export const DropDownMenuIcon = ({
   const [contactData, { isLoading: isAdding }] = useAddContactMutation();
 
   // functions
-  const handleErrorModalButtonClicked = () => {
-    setShowErrorModal(false);
-  };
-
   const handleCancelButtonClicked = () => {
     setShowAddContactModal(false);
+    reset();
   };
 
   const addContactFormOnSubmit: SubmitHandler<AddContactInputs> = async (
@@ -69,14 +68,18 @@ export const DropDownMenuIcon = ({
 
       if (response) {
         setShowAddContactModal(false);
+        dispatch(setShowSuccessSnackbar(true));
+        dispatch(setSuccessMessage(response.message));
         reset();
       }
 
       setShowAddContactModal(false);
     } catch (err) {
       if (err) {
-        setErrorMsg(err as AddContactErrorMessage);
-        setShowErrorModal(true);
+        dispatch(
+          setErrorMessage((err as AddContactErrorMessage).data.ErrorMessage)
+        );
+        dispatch(setShowErrorSnackbar(true));
       }
     }
   };
@@ -150,17 +153,6 @@ export const DropDownMenuIcon = ({
               </div>
             </form>
           </div>
-          {showErrorModal && (
-            <ErrorModal
-              errorMsg={
-                ContactConstants.AddContactForm.ADD_CONTACT_FAILED_MSG +
-                errorMsg?.data?.ErrorMessage
-                  ? errorMsg?.data.ErrorMessage
-                  : ""
-              }
-              handleButtonClicked={handleErrorModalButtonClicked}
-            />
-          )}
         </div>
       )}
     </>

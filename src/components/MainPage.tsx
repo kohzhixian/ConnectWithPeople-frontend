@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
-import { WebSocketProvider } from "../hooks/WebSocketProvider";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import {
   setShowChatroomOverlay,
   setShowCreateChatroomOverlay,
   setShowSidebarNewChatOverlay,
 } from "../redux/reducers/chatroom.reducer";
+import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
 import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
 import { Sidebar } from "./Sidebar";
 import { SidebarNewChat } from "./SidebarNewChat";
-import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
+import { ErrorSnackbar } from "./snackbar/ErrorSnackbar";
+import { SuccessSnackbar } from "./snackbar/SuccessSnackbar";
 export const MainPage = () => {
   //constants
   const dispatch = useAppDispatch();
   const chatroomSelector = useAppSelector((state) => state.chatroom);
+  const miscSelector = useAppSelector((state) => state.misc);
   const showChatroomOverlay = chatroomSelector.showChatroomOverlay;
   const showCreateChatroomOverlay = chatroomSelector.showCreateChatroomOverlay;
   const showSidebarNewChatOverlay = chatroomSelector.showSidebarNewChatOverlay;
+  const showhowSuccessSnackbar = miscSelector.showSuccessSnackbar;
+  const successsMessage = miscSelector.successMessage;
+  const showErrorModal = miscSelector.showErrorSnackbar;
+  const errorMessage = miscSelector.errorMessage;
 
   //use state
   const [selectedChatroomId, setSelectedChatroomId] = useState<string>("");
@@ -77,41 +83,45 @@ export const MainPage = () => {
     refetchSidebarChatroomData();
   }, [sidebarChatroomData]);
   return (
-    <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
-      <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
-        <div className="flex w-full h-full overflow-hidden items-center justify-center">
-          {showSidebarNewChatOverlay ? (
-            <SidebarNewChat
-              selectedContact={selectedContact}
-              setSelectedContact={setSelectedContact}
-            />
-          ) : (
-            <Sidebar
-              selectedChatroomId={selectedChatroomId}
-              handleNewChatIconClicked={handleNewChatIconClicked}
-              setSelectedChatroomId={setSelectedChatroomId}
-              latestMessageData={latestMessageData!}
-              refetchLatestMessage={refetchLatestMessage}
-              latestMessageIsLoading={latestMessageIsLoading}
-              sidebarChatroomData={sidebarChatroomData}
-              sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
-              refetchSidebarChatroomData={refetchSidebarChatroomData}
-            />
-          )}
-          {showChatroomOverlay || showCreateChatroomOverlay ? (
-            <ChatRoomOverlay
-              selectedChatroomId={selectedChatroomId}
-              setSelectedChatroomId={setSelectedChatroomId}
-              refetchLatestMessage={refetchLatestMessage}
-              selectedContact={selectedContact}
-              isCreate={showCreateChatroomOverlay}
-              refetchSidebarChatroomData={refetchSidebarChatroomData}
-            />
-          ) : (
-            <NoChatroomOpenedDiv />
-          )}
+    <>
+      <div className="absolute mt-[19px] mb-[19px] inset-0 flex items-center justify-center">
+        <div className="bg-customWhite w-full max-w-[1680px] h-full max-h-screen">
+          <div className="flex w-full h-full overflow-hidden items-center justify-center">
+            {showSidebarNewChatOverlay ? (
+              <SidebarNewChat
+                selectedContact={selectedContact}
+                setSelectedContact={setSelectedContact}
+              />
+            ) : (
+              <Sidebar
+                selectedChatroomId={selectedChatroomId}
+                handleNewChatIconClicked={handleNewChatIconClicked}
+                setSelectedChatroomId={setSelectedChatroomId}
+                latestMessageData={latestMessageData!}
+                refetchLatestMessage={refetchLatestMessage}
+                latestMessageIsLoading={latestMessageIsLoading}
+                sidebarChatroomData={sidebarChatroomData}
+                sidebarChatroomDataIsLoading={sidebarChatroomDataIsLoading}
+                refetchSidebarChatroomData={refetchSidebarChatroomData}
+              />
+            )}
+            {showChatroomOverlay || showCreateChatroomOverlay ? (
+              <ChatRoomOverlay
+                selectedChatroomId={selectedChatroomId}
+                setSelectedChatroomId={setSelectedChatroomId}
+                refetchLatestMessage={refetchLatestMessage}
+                selectedContact={selectedContact}
+                isCreate={showCreateChatroomOverlay}
+                refetchSidebarChatroomData={refetchSidebarChatroomData}
+              />
+            ) : (
+              <NoChatroomOpenedDiv />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      {showhowSuccessSnackbar && <SuccessSnackbar message={successsMessage} />}
+      {showErrorModal && <ErrorSnackbar message={errorMessage} />}
+    </>
   );
 };
