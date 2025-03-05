@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { useWebSocket } from "../hooks/WebSocketProvider";
 import { useAppDispatch } from "../redux/hooks";
@@ -47,6 +47,7 @@ export const ChatRoomOverlay = ({
   const decodedToken = jwtDecode<TokenDataType>(String(token));
   const dispatch = useAppDispatch();
   const { socket } = useWebSocket();
+  const bottomOfChatroomRef = useRef<HTMLDivElement>(null);
 
   // use states
   const [messageToSent, setMessageToSent] = useState<string>("");
@@ -107,12 +108,18 @@ export const ChatRoomOverlay = ({
       setMessageToDisplay(formattedChatroomMessage);
     }
   }, [chatroomDetailsData]);
+
   useEffect(() => {
     if (selectedChatroomId) {
       refetchSidebarChatroomData();
       refetchChatroomDetails();
     }
   }, [selectedChatroomId]);
+
+  useEffect(() => {
+    // scroll to bottom of chatroom everytime message data changes
+    bottomOfChatroomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messageToDisplay]);
 
   // functions
   const convertISOstringToTime = (ISOstring: string) => {
@@ -275,6 +282,7 @@ export const ChatRoomOverlay = ({
                   currentLoggedInUser={decodedToken.userId}
                 />
               ))}
+            <div ref={bottomOfChatroomRef} />
           </div>
           <div className="flex max-w-full min-h-[62px] px-4 pb-[5px] bg-backgroundDefaultActive">
             <div className="flex items-center w-[88px] h-auto">
