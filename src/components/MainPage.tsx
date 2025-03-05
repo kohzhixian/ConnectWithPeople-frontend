@@ -7,6 +7,7 @@ import {
 } from "../redux/reducers/chatroom.reducer";
 import { useGetChatroomsByUserIdQuery } from "../services/chatroom.api";
 import { useGetLatestMsgForAllChatroomLinkedToUserQuery } from "../services/message.api";
+import { formattedChatroomMessageType } from "../types/chatRoomType";
 import { getContactByUserIdResponseType } from "../types/rtkQuery/contactApi.type";
 import { ChatRoomOverlay } from "./ChatRoomOverlay";
 import { NoChatroomOpenedDiv } from "./NoChatroomOpenedDiv";
@@ -34,6 +35,10 @@ export const MainPage = () => {
       contact_name: "",
       contact_phone_num: 0,
     });
+
+  const [messageToDisplay, setMessageToDisplay] = useState<
+    formattedChatroomMessageType[]
+  >([]);
 
   //use effects
   useEffect(() => {
@@ -91,6 +96,8 @@ export const MainPage = () => {
               <SidebarNewChat
                 selectedContact={selectedContact}
                 setSelectedContact={setSelectedContact}
+                setSelectedChatroomId={setSelectedChatroomId}
+                setMessageToDisplay={setMessageToDisplay}
               />
             ) : (
               <Sidebar
@@ -113,6 +120,8 @@ export const MainPage = () => {
                 selectedContact={selectedContact}
                 isCreate={showCreateChatroomOverlay}
                 refetchSidebarChatroomData={refetchSidebarChatroomData}
+                messageToDisplay={messageToDisplay}
+                setMessageToDisplay={setMessageToDisplay}
               />
             ) : (
               <NoChatroomOpenedDiv />

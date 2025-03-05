@@ -34,6 +34,8 @@ export const ChatRoomOverlay = ({
   selectedContact,
   isCreate,
   refetchSidebarChatroomData,
+  messageToDisplay,
+  setMessageToDisplay,
 }: {
   selectedChatroomId: string;
   setSelectedChatroomId: Dispatch<SetStateAction<string>>;
@@ -41,6 +43,8 @@ export const ChatRoomOverlay = ({
   selectedContact: getContactByUserIdResponseType;
   isCreate: boolean;
   refetchSidebarChatroomData: () => void;
+  messageToDisplay: formattedChatroomMessageType[];
+  setMessageToDisplay: Dispatch<SetStateAction<formattedChatroomMessageType[]>>;
 }) => {
   // constants
   const token = localStorage.getItem("token");
@@ -51,9 +55,7 @@ export const ChatRoomOverlay = ({
 
   // use states
   const [messageToSent, setMessageToSent] = useState<string>("");
-  const [messageToDisplay, setMessageToDisplay] = useState<
-    formattedChatroomMessageType[]
-  >([]);
+
   // rtk query
   const {
     data: chatroomDetailsData,

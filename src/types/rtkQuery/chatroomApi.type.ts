@@ -29,3 +29,11 @@ export interface GetUsersInChatroomResponse {
   phoneNum: number;
   username: string;
 }
+
+export interface CheckExistingChatroomResponse {
+  chatroom_icon: string;
+  chatroom_name: string;
+  created_at: string;
+  id: string;
+  updated_at: string;
+}
